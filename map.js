@@ -1,4 +1,4 @@
-var map1Nav = new OpenLayers.Control.Navigation();
+ var map1Nav = new OpenLayers.Control.Navigation();
 
 function init(lonmin,latmin,lonmax,latmax) {
     extlonmin = lonmin;
