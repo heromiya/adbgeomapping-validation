@@ -58,7 +58,7 @@ $latmin=$row[3];
 	    <tr><td><div id="adm2">Adm2:</div></td></tr>
 	    <tr><td><div id="results">Results:</div></td></tr>
 	    <form name="validation">
-	      <tr id="vi"><td>The location is <select name="correct" onChange="updateAttributes(attribute,document.validation.correct.value);">
+	      <tr id="vi"><td>The location is <select name="correct" onChange="updateAttributes(attribute,this.options[this.options.selectedIndex].value);">
 		    <option value=""></option>
 		    <option value="correct">correct</option>
 		    <option value="incorrect">NOT correct</option>

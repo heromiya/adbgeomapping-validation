@@ -23,13 +23,13 @@ function onPopupClose(evt) {
 function attributeStr(feature){
     str = '<td id="vi">Class:'
     if(feature.attributes.validation == null || feature.attributes.validation == ''){
-	str += '<select name="correct" onChange="updateAttributes(attribute,document.validation.correct.value);"><option value="" selected></option><option value="correct">correct</option><option value="incorrect">NOT correct</option></select></td>';
+	str += '<select name="correct" onChange="updateAttributes(attribute,this.options[this.options.selectedIndex].value);"><option value="" selected></option><option value="correct">correct</option><option value="incorrect">NOT correct</option></select></td>';
     }else if(feature.attributes.validation == 'correct') {
-	str += '<select name="correct" onChange="updateAttributes(attribute,document.validation.correct.value);"><option value=""></option><option value="correct" selected>correct</option><option value="incorrect">NOT correct</option></select></td>';
+	str += '<select name="correct" onChange="updateAttributes(attribute,this.options[this.options.selectedIndex].value);"><option value=""></option><option value="correct" selected>correct</option><option value="incorrect">NOT correct</option></select></td>';
     }else if(feature.attributes.validation == 'incorrect') {
-	str += '<select name="correct" onChange="updateAttributes(attribute,document.validation.correct.value);"><option value=""></option><option value="correct">correct</option><option value="incorrect" selected>NOT correct</option></select></td>';
+	str += '<select name="correct" onChange="updateAttributes(attribute,this.options[this.options.selectedIndex].value);"><option value=""></option><option value="correct">correct</option><option value="incorrect" selected>NOT correct</option></select></td>';
     }else {
-	str += '<select name="correct" onChange="updateAttributes(attribute,document.validation.correct.value);"><option value=""></option><option value="correct">correct</option><option value="incorrect">NOT correct</option><option value="undefined" selected>undefined</option></select></td>';
+	str += '<select name="correct" onChange="updateAttributes(attribute,this.options[this.options.selectedIndex].value);"><option value=""></option><option value="correct">correct</option><option value="incorrect">NOT correct</option><option value="undefined" selected>undefined</option></select></td>';
     }
 
     document.getElementById("vi").innerHTML = str;
