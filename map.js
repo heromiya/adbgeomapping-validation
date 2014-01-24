@@ -1,4 +1,4 @@
-var selectControl, selectedFeature, map1,attribute;
+ var selectControl, selectedFeature, map1,attribute;
 function showMsg(szMessage) {
     document.getElementById("nodelist").innerHTML = szMessage;
     setTimeout("document.getElementById('nodelist').innerHTML = ''",3000);
@@ -21,24 +21,27 @@ function onPopupClose(evt) {
 }
 
 function attributeStr(feature){
-    str = '<td id="vi" class="item">Class:'
-    if(feature.attributes.vi == 'urban'){
-	str += '<select size="1" name="vi_input" onChange="updateAttributes(attribute);"><option value="urban" selected>urban</option><option value="unknown">unknown</option></select></td>';
-    }else if(feature.attributes.vi == 'unknown') {
-	str += '<select size="1" name="vi_input" onChange="updateAttributes(attribute);"><option value="urban">urban</option><option value="unknown" selected>unknown</option></select></td>';
+    str = '<td id="vi">Class:'
+    if(feature.attributes.validation == null || feature.attributes.validation == ''){
+	str += '<select name="correct" onChange="updateAttributes(attribute,document.validation.correct.value);"><option value="" selected></option><option value="correct">correct</option><option value="incorrect">NOT correct</option></select></td>';
+    }else if(feature.attributes.validation == 'correct') {
+	str += '<select name="correct" onChange="updateAttributes(attribute,document.validation.correct.value);"><option value=""></option><option value="correct" selected>correct</option><option value="incorrect">NOT correct</option></select></td>';
+    }else if(feature.attributes.validation == 'incorrect') {
+	str += '<select name="correct" onChange="updateAttributes(attribute,document.validation.correct.value);"><option value=""></option><option value="correct">correct</option><option value="incorrect" selected>NOT correct</option></select></td>';
     }else {
-	str += '<select size="1" name="vi_input" onChange="updateAttributes(attribute);"><option value="urban">urban</option><option value="unknown">unknown</option><option value="undefined" selected>undefined</option></select></td>';
+	str += '<select name="correct" onChange="updateAttributes(attribute,document.validation.correct.value);"><option value=""></option><option value="correct">correct</option><option value="incorrect">NOT correct</option><option value="undefined" selected>undefined</option></select></td>';
     }
+
     document.getElementById("vi").innerHTML = str;
     
-    str = '<td id="note" class="item">Note:'
+/*    str = '<td id="note" class="item">Note:'
     if(feature.attributes.note == null){
 	str += '<input type="text" name="note_input" onChange="updateAttributes(attribute);" value="">';
     }else{
 	str += '<input type="text" name="note_input" onChange="updateAttributes(attribute);" value="' + feature.attributes.note + '">';
     }
     str += '</td>'
-    document.getElementById("note").innerHTML = str;
+    document.getElementById("note").innerHTML = str;*/
 }
 
 
@@ -50,6 +53,7 @@ function onFeatureSelect(feature) {
     document.getElementById("adm1").innerHTML = "Adm1: " + feature.attributes.adm1;
     document.getElementById("adm2").innerHTML = "Adm2: " + feature.attributes.adm2;
     document.getElementById("results").innerHTML = "Results: " + feature.attributes.results;
+    attributeStr(feature);
 
 }
 
@@ -73,8 +77,10 @@ var poi_style = new OpenLayers.StyleMap(
 	},
 	OpenLayers.Feature.Vector.style["default"]));
 
-function updateAttributes(attribute){
-    selectedFeature.attributes.validation = document.validation.correct.value;
+function updateAttributes(attribute,value){
+    selectedFeature.attributes.validation = value;
+//    alert(selectedFeature.attributes.validation);
+//    alert( document.validation.correct.value);
     selectedFeature.state = OpenLayers.State.UPDATE;
     saveStrategy.save();
 };
