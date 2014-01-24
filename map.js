@@ -19,27 +19,6 @@ saveStrategy.auto = true;
 function onPopupClose(evt) {
     selectControl.unselect(selectedFeature);
 }
-/*
-function onFeatureSelect(feature) {
-    selectedFeature = feature;
-    popup = new OpenLayers.Popup.FramedCloud(
-	"chicken"
-	,feature.geometry.getBounds().getCenterLonLat()
-	,null
-	,"<div style='font-size:.8em'>Project ID: " + feature.attributes.project_id
-	    + "<br>Project title: " + feature.attributes.project_title
-	    + "<br>Country: " + feature.attributes.country
-	    + "<br>Adm1: " + feature.attributes.adm1
-	    + "<br>Adm2: " + feature.attributes.adm2
-	    +"</div>"
-	,null
-	,true
-	,onPopupClose
-    );
-    feature.popup = popup;
-    map1.addPopup(popup);
-}
-*/
 
 function attributeStr(feature){
     str = '<td id="vi" class="item">Class:'
