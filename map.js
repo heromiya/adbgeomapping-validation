@@ -1,11 +1,12 @@
- var selectControl, selectedFeature, map1,attribute;
+var WFSHOST="192.168.119.128:8080";
+var selectControl, selectedFeature, map1,attribute;
 function showMsg(szMessage) {
     document.getElementById("nodelist").innerHTML = szMessage;
     setTimeout("document.getElementById('nodelist').innerHTML = ''",3000);
 }
 
 function showSuccessMsg(){
-    showMsg("<img src='Save-icon.png'> Saved.");
+    showMsg("<img src='img/Save-icon.png'> Saved.");
     //alert('Saved');
     //var nowdate = new Date();
     //document.getElementById("lastSave").innerHTML = "Last save:" + (Number(nowdate.getMonth())+1) + "/" + nowdate.getDate() + " " + nowdate.getHours() + ":" + nowdate.getMinutes();
@@ -47,14 +48,19 @@ function attributeStr(feature){
 
 function onFeatureSelect(feature) {
     selectedFeature = feature;
+	if(feature.attributes.correction_text == null || feature.attributes.correction_text == ''){
+		correction_text = 'Please input here.';
+	}else{
+		correction_text = feature.attributes.correction_text;
+	}
     document.getElementById("project_id").innerHTML = "Project ID: " + feature.attributes.project_id;
     document.getElementById("project_title").innerHTML = "Project Title: " + feature.attributes.project_title;
     document.getElementById("country").innerHTML = "Country: " + feature.attributes.country;
     document.getElementById("adm1").innerHTML = "Adm1: " + feature.attributes.adm1;
     document.getElementById("adm2").innerHTML = "Adm2: " + feature.attributes.adm2;
     document.getElementById("results").innerHTML = "Results: " + feature.attributes.results;
-    attributeStr(feature);
-
+	document.getElementById("correction_text").innerHTML = "<textarea name=\"correction_text\" rows=\"4\" cols=\"40\" onChange=\"updateCorrectionText(attribute,this.value)\">"+correction_text+"</textarea>";
+	attributeStr(feature);
 }
 
 function onFeatureUnselect(feature) {
@@ -69,21 +75,22 @@ function onFeatureUnselect(feature) {
 //    feature.popup = null;
 }   
 
-var poi_style = new OpenLayers.StyleMap(
-    OpenLayers.Util.applyDefaults(
-	{ pointRadius: 7,
-	  fillOpacity: 1,
-	  externalGraphic: "map_pin.png"
-	},
-	OpenLayers.Feature.Vector.style["default"]));
 
-function updateAttributes(attribute,value){
+function updateAttributes(attribute,value,text){
     selectedFeature.attributes.validation = value;
-//    alert(selectedFeature.attributes.validation);
-//    alert( document.validation.correct.value);
     selectedFeature.state = OpenLayers.State.UPDATE;
     saveStrategy.save();
 };
+
+function updateCorrectionText(attribute,text){
+    selectedFeature.attributes.correction_text = text;
+	alert(text);
+	alert(selectedFeature.attributes.correction_text);
+
+    selectedFeature.state = OpenLayers.State.UPDATE;
+    saveStrategy.save();
+};
+
 
 function init(lonmin,latmin,lonmax,latmax,pid) {
     extlonmin = lonmin;
@@ -104,7 +111,7 @@ function init(lonmin,latmin,lonmax,latmax,pid) {
     	    ,new OpenLayers.Control.MousePosition()
 	    ,new OpenLayers.Control.KeyboardDefaults() 
 	    ,new OpenLayers.Control.Scale()
-	    ,new OpenLayers.Control.OverviewMap()
+	    //,new OpenLayers.Control.OverviewMap()
 	    ,new OpenLayers.Control.LayerSwitcher()
 	]
 	,eventListeners: {
@@ -118,24 +125,25 @@ function init(lonmin,latmin,lonmax,latmax,pid) {
 		new OpenLayers.Strategy.BBOX()
 		,saveStrategy
 	    ]
-	    //,styleMap: new OpenLayers.StyleMap(poi_style)
+//	    ,styleMap: [new OpenLayers.StyleMap(style), new OpenLayers.StyleMap(selected)]
+	    ,styleMap: new OpenLayers.StyleMap({default: style, select: selected})
 	    ,protocol: new OpenLayers.Protocol.WFS(
 		{
 		    version: "1.1.0",
 		    srsName: "EPSG:900913",
-		    url: "http://guam.csis.u-tokyo.ac.jp:28080/geoserver/wfs",	
+		    url: "http://"+WFSHOST+"/geoserver/wfs",	
 		    featureNS :  "http://www.opengeospatial.net/cite",
 		    maxExtent: mapextent_wgs84,
 		    featureType: "allworldbank_ibrdida",
 		    geometryName: "the_geom",
-		    schema: "http://guam.csis.u-tokyo.ac.jp:28080/geoserver/wfs/DescribeFeatureType?version=1.1.0&typename=cite:allworldbank_ibrdida"
+		    schema: "http://"+WFSHOST+"/geoserver/wfs/DescribeFeatureType?version=1.1.0&typename=cite:allworldbank_ibrdida"
 		})
 	    ,eventListeners: {
 		"loadstart": function(){
-		    document.getElementById("nodelist").innerHTML = "<img src='loader.gif'> Loading ...";
+		    document.getElementById("nodelist").innerHTML = "<img src='img/loader.gif'> Loading ...";
 		},
 		"loadend": function(){
-		    document.getElementById("nodelist").innerHTML = "<img src='Check-icon.png'> Completed.";
+		    document.getElementById("nodelist").innerHTML = "<img src='img/Check-icon.png'> Completed.";
 		    setTimeout("document.getElementById('nodelist').innerHTML = ''",5000);
 		}
 	    }
@@ -151,26 +159,35 @@ function init(lonmin,latmin,lonmax,latmax,pid) {
 		})
 	}
     );
-
+	
     wfs_layer.events.on({
         "featuremodified": function(event){
 	    event.feature.state = OpenLayers.State.UPDATE;
 	    saveStrategy.save();
-	},
-	"beforefeatureadded": function(event){
-	    feature = event.feature;
-	    if (feature.attributes.validation == null)
-		feature.attributes.validation = 'NULL';
-	},
-    });
-    
-    map1.addLayers([google_maps,google_satellite,google_hybrid,osm,bing_road,bing_aerial,bing_hybrid,wfs_layer]);
+		},
+		"beforefeatureadded": function(event){
+			feature = event.feature;
+			if (feature.attributes.validation == null)
+			feature.attributes.validation = 'NULL';
+		},
+	});
+
+    //map1.addLayers([google_maps,google_satellite,google_hybrid,osm,bing_road,bing_aerial,bing_hybrid,wfs_layer]);
+    map1.addLayers([wms,wfs_layer]);
     map1.zoomToExtent(map1extent);
 
     selectControl = new OpenLayers.Control.SelectFeature(
-	wfs_layer
-	,{ onSelect: onFeatureSelect
-	  ,onUnselect: onFeatureUnselect});
+		wfs_layer
+		,{ onSelect: onFeatureSelect
+		  ,onUnselect: onFeatureUnselect
+//		  ,selectStyle: new OpenLayers.StyleMap(selected)
+
+                    //{fill: true, stroke: true},
+                    //OpenLayers.Feature.Vector.style["select"]
+		  
+		  
+		  }
+	);
     map1.addControl(selectControl);
     selectControl.activate();
     saveStrategy.activate();

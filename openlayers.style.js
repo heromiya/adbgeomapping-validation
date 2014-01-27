@@ -1,58 +1,81 @@
 var style = new OpenLayers.Style(
-    {
-        fill: true,
-        stroke: true,
-	pointRadius: 5,
-        fillOpacity: "0.2",
-	strokeWidth: 1,
-        zIndex: 0,
-    },
-    {
-        rules: [
-            new OpenLayers.Rule({
-                filter: new OpenLayers.Filter.Comparison({
-                    type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
-                    property: "vi",
-		    value: ""
-                }),
-                symbolizer: {
-                    fillColor: "#99FF66",
-                    strokeColor: "#33FF00"
-                }
-            }),
-            new OpenLayers.Rule({
-                filter: new OpenLayers.Filter.Comparison({
-                    type: OpenLayers.Filter.Comparison.EQUAL_TO,
-                    property: "vi",
-                    value: "urban"
-                }),
-                symbolizer: {
-                    fillColor: "#6666FF",
-                    strokeColor: "#0000FF"
-                }
-            }),
-            new OpenLayers.Rule({
-                filter: new OpenLayers.Filter.Comparison({
-                    type: OpenLayers.Filter.Comparison.EQUAL_TO,
-                    property: "vi",
-		    value: "non-urban"
-                }),
-                symbolizer: {
-                    fillColor: "#FF6666",
-                    strokeColor: "#FF0000"
-                }
-            }),
-            new OpenLayers.Rule({
-                filter: new OpenLayers.Filter.Comparison({
-                    type: OpenLayers.Filter.Comparison.EQUAL_TO,
-                    property: "vi",
-		    value: "unknown"
-                }),
-                symbolizer: {
-                    fillColor: "#FFFF66",
-                    strokeColor: "#FF6600"
-                }
-            }),
-        ]
-    }
+	{
+		graphicWidth: 17,
+		graphicHeight: 20,
+		graphicYOffset: -23, // shift graphic up 28 pixels
+	},
+	{
+		rules: [
+			new OpenLayers.Rule({
+				// a rule contains an optional filter
+				filter: new OpenLayers.Filter.Comparison({
+					type: OpenLayers.Filter.Comparison.EQUAL_TO,
+					property: "validation", // the "foo" feature attribute
+					value: "correct"
+				}),
+				// if a feature matches the above filter, use this symbolizer
+				symbolizer: {
+					externalGraphic: "OpenLayers-2.13.1/img/marker-blue.png"
+				}
+			}),
+			new OpenLayers.Rule({
+				filter: new OpenLayers.Filter.Comparison({
+					type: OpenLayers.Filter.Comparison.EQUAL_TO,
+					property: "validation",
+					value: "incorrect"
+				}),
+				symbolizer: {
+					externalGraphic: "OpenLayers-2.13.1/img/marker-green.png"
+				}
+			}),
+			new OpenLayers.Rule({
+				// apply this rule if no others apply
+				elseFilter: true,
+				symbolizer: {
+					externalGraphic: "OpenLayers-2.13.1/img/marker.png"
+				}
+			})
+		]
+	}
+);
+
+var selected = new OpenLayers.Style(
+	{
+		graphicWidth: 32,
+		graphicHeight: 38,
+		graphicYOffset: -40, // shift graphic up 28 pixels
+	},
+	{
+		rules: [
+			new OpenLayers.Rule({
+				// a rule contains an optional filter
+				filter: new OpenLayers.Filter.Comparison({
+					type: OpenLayers.Filter.Comparison.EQUAL_TO,
+					property: "validation", // the "foo" feature attribute
+					value: "correct"
+				}),
+				// if a feature matches the above filter, use this symbolizer
+				symbolizer: {
+					externalGraphic: "OpenLayers-2.13.1/img/marker-blue.png"
+				}
+			}),
+			new OpenLayers.Rule({
+				filter: new OpenLayers.Filter.Comparison({
+					type: OpenLayers.Filter.Comparison.EQUAL_TO,
+					property: "validation",
+					value: "incorrect"
+				}),
+				symbolizer: {
+					externalGraphic: "OpenLayers-2.13.1/img/marker-green.png"
+				}
+			}),
+			new OpenLayers.Rule({
+				// apply this rule if no others apply
+				elseFilter: true,
+				symbolizer: {
+					externalGraphic: "OpenLayers-2.13.1/img/marker.png"
+				}
+			})
+		]
+	}
 );

@@ -1,10 +1,11 @@
 <?php
 require_once 'MDB2.php';
 $DBHOST="localhost";
-$WEBHOST="guam.csis.u-tokyo.ac.jp";
+#$WEBHOST="guam.csis.u-tokyo.ac.jp";
 $db = MDB2::connect('pgsql://heromiya@'.$DBHOST.'/adbgeomapping?charset=utf8');
 if(PEAR::isError($db)) {
     print('There is an error with connection to the database. Please contact with administrator.');
+	echo $db->getDebugInfo();
 }
 $proj1=NULL;
 $pid=NULL;
@@ -22,9 +23,20 @@ $stm = $db->prepare("SELECT ST_XMax(ST_Collect(the_geom))
 		    ,array('text')
 		    ,array('float','float','float','float')
 		    );
+
+if (PEAR::isError($stm)){
+echo $stm->getDebugInfo();
+exit();
+}
 $result = $stm->execute($pid);
 
-while ($row = $result->fetchRow()) {
+if (PEAR::isError($result)){
+echo $result->getDebugInfo();
+exit();
+}
+
+
+while ($row = $result->fetchRow(DB2_FETCHMODE_ORDERED)) {
 $lonmax=$row[0];
 $lonmin=$row[1];
 $latmax=$row[2];
@@ -36,14 +48,13 @@ $latmin=$row[3];
 ?>
 <html>
   <head>
-    <script type="text/javascript" src="../OpenLayers-2.12/lib/OpenLayers.js"></script> 
-    <script type="text/javascript" src="../OpenLayers-2.12/lib/deprecated.js"></script>
-    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
-    <script type="text/javascript" src="proj4js/lib/proj4js-compressed.js"></script>
+    <script type="text/javascript" src="OpenLayers-2.13.1/OpenLayers.js"></script> 
+    <script type="text/javascript" src="googlemapsapis.js"></script> 
+<!--    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>-->
     <script type="text/javascript" src="maplayers.js"></script>
     <script type="text/javascript" src="openlayers.style.js"></script>
     <script type="text/javascript" src="map.js"></script>
-    <title>ADB GeoMapping - Validation</title>
+    <title>GeoMapping - Validation</title>
   </head>
   <body onload="init(<?php printf('%lf,%lf,%lf,%lf,\'%s\'',$lonmin,$latmin,$lonmax,$latmax,$pid)?>)">
     <table width="100%" height="100%" cellpadding="0" cellspacing="0" >
@@ -63,7 +74,13 @@ $latmin=$row[3];
 		    <option value="correct">correct</option>
 		    <option value="incorrect">NOT correct</option>
 	      </select></td></tr>
-	      <tr><td>If the location is not correct, please advise correct location by map or text.<textarea name="correction_text" rows="4" cols="40">Please input here.</textarea></td></tr>
+	      <tr>
+			<td>If the location is not correct, please correct location by map or text.
+				<div id="correction_text">
+				<textarea name="correction_text" rows="4" cols="40" onChange="updateCorrectionText(attribute,this.value);">Please input here.</textarea>
+				</div>
+			</td>
+		</tr>
 	    </form>
 	  </table>
 	</td>
