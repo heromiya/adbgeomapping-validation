@@ -1,7 +1,6 @@
 <?php
+include 'var.php';
 require_once 'MDB2.php';
-$DBHOST="localhost";
-#$WEBHOST="guam.csis.u-tokyo.ac.jp";
 $db = MDB2::connect('pgsql://heromiya@'.$DBHOST.'/adbgeomapping?charset=utf8');
 if(PEAR::isError($db)) {
     print('There is an error with connection to the database. Please contact with administrator.');
@@ -56,7 +55,7 @@ $latmin=$row[3];
     <script type="text/javascript" src="map.js"></script>
     <title>GeoMapping - Validation</title>
   </head>
-  <body onload="init(<?php printf('%lf,%lf,%lf,%lf,\'%s\'',$lonmin,$latmin,$lonmax,$latmax,$pid)?>)">
+  <body onload="init(<?php printf('%lf,%lf,%lf,%lf,\'%s\',\'%s\'',$lonmin,$latmin,$lonmax,$latmax,$pid,$WFSHOST)?>)">
     <table width="100%" height="100%" cellpadding="0" cellspacing="0" >
       <tr height="20px">
 	<td align="center" class="item"><div id="nodelist"></div></td>
@@ -75,8 +74,9 @@ $latmin=$row[3];
 		    <option value="incorrect">NOT correct</option>
 	      </select></td></tr>
 	      <tr>
-			<td>If the location is not correct, please correct location by map or text.
-				<div id="correction_text">
+			<td>If the location is not correct, please correct location by map or text.<br>
+			<div id="correction_map"><input type="button" value="No location selected"></div>
+			<div id="correction_text">
 				<textarea name="correction_text" rows="4" cols="40" onChange="updateCorrectionText(attribute,this.value);">Please input here.</textarea>
 				</div>
 			</td>
