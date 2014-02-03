@@ -57,7 +57,7 @@ $latmin=$row[3];
   </head>
   <body onload="init(<?php printf('%lf,%lf,%lf,%lf,\'%s\',\'%s\'',$lonmin,$latmin,$lonmax,$latmax,$pid,$WFSHOST)?>)">
     <table width="100%" height="100%" cellpadding="0" cellspacing="0" >
-      <tr height="20px">
+      <tr height="30px">
 	<td align="center" class="item"><div id="nodelist"></div></td>
 	<td rowspan="2" width="250px">
 	  <table border="1" width="100%">
