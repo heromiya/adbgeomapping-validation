@@ -49,7 +49,7 @@ $latmin=$row[3];
   <head>
     <script type="text/javascript" src="OpenLayers-2.13.1/OpenLayers.js"></script> 
     <script type="text/javascript" src="googlemapsapis.js"></script> 
-<!--    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>-->
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&language=en"></script>
     <script type="text/javascript" src="maplayers.js"></script>
     <script type="text/javascript" src="openlayers.style.js"></script>
     <script type="text/javascript" src="map.js"></script>
