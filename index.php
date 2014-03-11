@@ -34,33 +34,31 @@ echo $result->getDebugInfo();
 exit();
 }
 
-
 while ($row = $result->fetchRow(DB2_FETCHMODE_ORDERED)) {
-$lonmax=$row[0];
-$lonmin=$row[1];
-$latmax=$row[2];
-$latmin=$row[3];
-
+	$lonmax=$row[0];
+	$lonmin=$row[1];
+	$latmax=$row[2];
+	$latmin=$row[3];
 }
-
-
 ?>
+
 <html>
   <head>
     <script type="text/javascript" src="OpenLayers-2.13.1/OpenLayers.js"></script> 
-    <script type="text/javascript" src="googlemapsapis.js"></script> 
+    <!--<script type="text/javascript" src="googlemapsapis.js"></script>-->
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&language=en"></script>
     <script type="text/javascript" src="maplayers.js"></script>
     <script type="text/javascript" src="openlayers.style.js"></script>
     <script type="text/javascript" src="map.js"></script>
+	<link rel="stylesheet" href="style.css" type="text/css">
     <title>GeoMapping - Validation</title>
   </head>
   <body onload="init(<?php printf('%lf,%lf,%lf,%lf,\'%s\',\'%s\'',$lonmin,$latmin,$lonmax,$latmax,$pid,$WFSHOST)?>)">
     <table width="100%" height="100%" cellpadding="0" cellspacing="0" >
       <tr height="30px">
-	<td align="center" class="item"><div id="nodelist"></div></td>
-	<td rowspan="2" width="250px">
-	  <table border="1" width="100%">
+	<td align="center" class="item" colspan="2"><div id="nodelist"></div></td></tr>
+	<tr><td width="350px" valign="top">
+	  <table border="1" width="100%" cellpadding="5px">
 	    <tr><td><div id="project_id">Project ID:</div></td></tr>
 	    <tr><td><div id="project_title">Project Title:</div></td></tr>
 	    <tr><td><div id="country">Country:</div></td></tr>
@@ -68,24 +66,18 @@ $latmin=$row[3];
 	    <tr><td><div id="adm2">Adm2:</div></td></tr>
 	    <tr><td><div id="results">Results:</div></td></tr>
 	    <form name="validation">
-	      <tr id="vi"><td>The location is <select name="correct" onChange="updateAttributes(attribute,this.options[this.options.selectedIndex].value);">
-		    <option value=""></option>
-		    <option value="correct">correct</option>
-		    <option value="incorrect">NOT correct</option>
-	      </select></td></tr>
-	      <tr>
-			<td>If the location is not correct, please correct location by map or text.<br>
-			<div id="correction_map"><input type="button" value="No location selected"></div>
-			<div id="correction_text">
-				<textarea name="correction_text" rows="4" cols="40" onChange="updateCorrectionText(attribute,this.value);">Please input here.</textarea>
-				</div>
-			</td>
+	      <tr id="vi"><td>Validation status - <br> Please click a symbol of location on the map.</td></tr>
+		<tr id="correction">
 		</tr>
 	    </form>
 	  </table>
+	  <h4 style="margin-left: 10px;">Legend</h4>
+	  <ul style="list-style-type:none;">
+	  <li><img src="OpenLayers-2.13.1/img/marker.png"> Needing validation</li>
+	  <li><img src="OpenLayers-2.13.1/img/marker-blue.png"> Correct</li>
+	  <li><img src="OpenLayers-2.13.1/img/marker-green.png"> Not correct</li>
+	  </ul>
 	</td>
-      </tr>
-      <tr height="100%">
 	<td id="col1">
 	  <div id="map1" style="height: 100%; background-color: #808080" unselectable = "on" user-select: none;></div>
 	</td>

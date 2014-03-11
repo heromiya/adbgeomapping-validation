@@ -15,26 +15,24 @@ var saveStrategy = new OpenLayers.Strategy.Save();
 saveStrategy.events.register("success", '', showSuccessMsg);
 saveStrategy.events.register("failure", '', showFailureMsg);
 saveStrategy.auto = true;
-function onPopupClose(evt) {
-    selectControl.unselect(selectedFeature);
-}
+
 function attributeStr(feature){
-    str = '<td id="vi">Class:'
+    str = '<tr id="vi"><td>Validation status - Location is:<select name="correct" onChange="updateAttributes(attribute,this.options[this.options.selectedIndex].value);"><option value=""'
     if(feature.attributes.validation == null || feature.attributes.validation == ''){
-	str += '<select name="correct" onChange="updateAttributes(attribute,this.options[this.options.selectedIndex].value);"><option value="" selected></option><option value="correct">correct</option><option value="incorrect">NOT correct</option></select></td>';
+	str += ' selected></option><option value="correct">correct</option><option value="incorrect">NOT correct';
     }else if(feature.attributes.validation == 'correct') {
-	str += '<select name="correct" onChange="updateAttributes(attribute,this.options[this.options.selectedIndex].value);"><option value=""></option><option value="correct" selected>correct</option><option value="incorrect">NOT correct</option></select></td>';
+	str += '></option><option value="correct" selected>correct</option><option value="incorrect">NOT correct';
     }else if(feature.attributes.validation == 'incorrect') {
-	str += '<select name="correct" onChange="updateAttributes(attribute,this.options[this.options.selectedIndex].value);"><option value=""></option><option value="correct">correct</option><option value="incorrect" selected>NOT correct</option></select></td>';
+	str += '></option><option value="correct">correct</option><option value="incorrect" selected>NOT correct';
     }else {
-	str += '<select name="correct" onChange="updateAttributes(attribute,this.options[this.options.selectedIndex].value);"><option value=""></option><option value="correct">correct</option><option value="incorrect">NOT correct</option><option value="undefined" selected>undefined</option></select></td>';
+	str += '></option><option value="correct">correct</option><option value="incorrect">NOT correct</option><option value="undefined" selected>undefined';
     }
-    document.getElementById("vi").innerHTML = str;
+    document.getElementById("vi").innerHTML = str + '</option></select></td>';
 }
 function onFeatureSelect(feature) {
     selectedFeature = feature;
 	if(feature.attributes.correction_text == null || feature.attributes.correction_text == ''){
-		correction_text = 'Please input here.';
+		correction_text = '';
 	}else{
 		correction_text = feature.attributes.correction_text;
 	}
@@ -44,32 +42,49 @@ function onFeatureSelect(feature) {
     document.getElementById("adm1").innerHTML = "Adm1: " + feature.attributes.adm1;
     document.getElementById("adm2").innerHTML = "Adm2: " + feature.attributes.adm2;
     document.getElementById("results").innerHTML = "Results: " + feature.attributes.results;
-	document.getElementById("correction_text").innerHTML = "<textarea name=\"correction_text\" rows=\"4\" cols=\"40\" onChange=\"updateCorrectionText(attribute,this.value)\">"+correction_text+"</textarea>";
 	attributeStr(feature);
-	document.getElementById("correction_map").innerHTML = "<input type=\"button\" value=\"Correct by Map\" onClick=\"drawFeatureOn();\">";
-
+	if(feature.attributes.validation == 'incorrect') {
+		document.getElementById("correction").innerHTML = '<tr id="correction"><td>*If the location is not correct, please provide the correction information in the box below:<br><div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);"></textarea></div>Optional: Correct location on the map.<div id="correction_map"><input type="button" value="No location selected"></div><input type="button" value="Send" onClick="selectControl.unselect(selectedFeature);"></td></tr>';
+		document.getElementById("correction_text").innerHTML = "<textarea name=\"correction_text\" rows=\"4\" cols=\"40\" onChange=\"updateCorrectionText(attribute,this.value)\">"+correction_text+"</textarea>";
+		document.getElementById("correction_map").innerHTML = "<input type=\"button\" value=\"Correct by Map\" onClick=\"drawFeatureOn();\">";
+	}
 }
 function onFeatureUnselect(feature) {
-	modify.deactivate();
-    document.getElementById("project_id").innerHTML = "Project ID: ";
-    document.getElementById("project_title").innerHTML = "Project Title: ";
-    document.getElementById("country").innerHTML = "Country: ";
-    document.getElementById("adm1").innerHTML = "Adm1: ";
-    document.getElementById("adm2").innerHTML = "Adm2: ";
-    document.getElementById("results").innerHTML = "Results: ";
-	document.getElementById("correction_map").innerHTML = "<input type=\"button\" value=\"No location selected\">";
+	if(feature.attributes.validation == 'incorrect'
+		&& (feature.attributes.correction_text == ''
+		|| feature.attributes.correction_text == null)) {
+		alert("Please provide correction information to the text box.");
+		selectControl.select(selectedFeature);
+		//break;
+	}else{
+		modify.deactivate();
+		document.getElementById("project_id").innerHTML = "Project ID: ";
+		document.getElementById("project_title").innerHTML = "Project Title: ";
+		document.getElementById("country").innerHTML = "Country: ";
+		document.getElementById("adm1").innerHTML = "Adm1: ";
+		document.getElementById("adm2").innerHTML = "Adm2: ";
+		document.getElementById("results").innerHTML = "Results: ";
+		document.getElementById("correction").innerHTML = '<tr id="correction"></tr>';
+		document.getElementById("vi").innerHTML = '<tr id="vi"><td>Validation status - <br> Please click a symbol of location on the map.</td></tr>';
+//	document.getElementById("correction_map").innerHTML = "<input type=\"button\" value=\"No location selected\">";
 //	document.getElementById("correction_map").innerHTML = "<a href=\"javascript:drawFeatureOn();\">Correct by Map</a>";
-
-}   
+	}
+}
 function updateAttributes(attribute,value,text){
     selectedFeature.attributes.validation = value;
+	if(value == 'incorrect') {
+		document.getElementById("correction").innerHTML = '<tr id="correction"><td>*If the location is not correct, please provide the correction information in the box below:<br><div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);"></textarea></div>Optional: Correct location on the map.<div id="correction_map"><input type="button" value="No location selected"></div><br><input type="button" value="Send" onClick="selectControl.unselect(selectedFeature);"></td></tr>';
+	}else{
+		document.getElementById("correction").innerHTML = '<tr id="correction"></tr>';
+	}
     selectedFeature.state = OpenLayers.State.UPDATE;
     saveStrategy.save();
+	selectControl.select(selectedFeature);
 };
 function updateCorrectionText(attribute,text){
     selectedFeature.attributes.correction_text = text;
-	alert(text);
-	alert(selectedFeature.attributes.correction_text);
+	//alert(text);
+	//alert(selectedFeature.attributes.correction_text);
 
     selectedFeature.state = OpenLayers.State.UPDATE;
     saveStrategy.save();
