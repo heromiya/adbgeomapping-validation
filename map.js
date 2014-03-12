@@ -36,12 +36,20 @@ function onFeatureSelect(feature) {
 	}else{
 		correction_text = feature.attributes.correction_text;
 	}
-    document.getElementById("project_id").innerHTML = "Project ID: " + feature.attributes.project_id;
-    document.getElementById("project_title").innerHTML = "Project Title: " + feature.attributes.project_title;
+    document.getElementById("project_id").innerHTML = "Project No.: " + feature.attributes.project_id;
+    document.getElementById("project_title").innerHTML = "Project Name: " + feature.attributes.title;
     document.getElementById("country").innerHTML = "Country: " + feature.attributes.country;
-    document.getElementById("adm1").innerHTML = "Adm1: " + feature.attributes.adm1;
-    document.getElementById("adm2").innerHTML = "Adm2: " + feature.attributes.adm2;
-    document.getElementById("results").innerHTML = "Results: " + feature.attributes.results;
+    document.getElementById("approval_nos").innerHTML = "Approval No.: " + feature.attributes.approval_nos;
+    if(feature.attributes.adm1_name == null){
+		document.getElementById("adm1").innerHTML = "Adm1: ";
+		}else{
+		document.getElementById("adm1").innerHTML = "Adm1: " + feature.attributes.adm1_name;
+		}
+	if(feature.attributes.adm2_name == null){
+		document.getElementById("adm2").innerHTML = "Adm2: " ;
+		}else{
+		document.getElementById("adm2").innerHTML = "Adm2: " + feature.attributes.adm2_name;
+		}
 	attributeStr(feature);
 	if(feature.attributes.validation == 'incorrect') {
 		document.getElementById("correction").innerHTML = '<tr id="correction"><td>*If the location is not correct, please provide the correction information in the box below:<br><div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);" onKeyUp="onBlurCorrectionText(this.value);">'+correction_text+'</textarea></div>Optional: Correct location on the map.<div id="correction_map"><input type="button" value="Correct by Map" onClick="drawFeatureOn();"></div><input type="button" value="Send" onClick="selectControl.unselect(selectedFeature);"></td></tr>';
@@ -72,16 +80,16 @@ function onFeatureUnselect(feature) {
 		feature.state = OpenLayers.State.UPDATE;
 		saveStrategy.save();
 		selectControl.select(feature);
+		document.getElementById("correction").innerHTML = '<tr id="correction"></tr>';
 		//break;
 	}else{
 		modify.deactivate();
-		document.getElementById("project_id").innerHTML = "Project ID: ";
-		document.getElementById("project_title").innerHTML = "Project Title: ";
-		document.getElementById("country").innerHTML = "Country: ";
-		document.getElementById("adm1").innerHTML = "Adm1: ";
-		document.getElementById("adm2").innerHTML = "Adm2: ";
-		document.getElementById("results").innerHTML = "Results: ";
-		document.getElementById("correction").innerHTML = '<tr id="correction"></tr>';
+    document.getElementById("project_id").innerHTML = "Project No.: ";
+    document.getElementById("project_title").innerHTML = "Project Name: ";
+    document.getElementById("country").innerHTML = "Country: ";
+    document.getElementById("approval_nos").innerHTML = "Approval No.: ";
+    document.getElementById("adm1").innerHTML = "Adm1: ";
+    document.getElementById("adm2").innerHTML = "Adm2: ";
 		document.getElementById("vi").innerHTML = '<tr id="vi"><td>Validation status - <br> Please click a symbol of location on the map.</td></tr>';
 //	document.getElementById("correction_map").innerHTML = "<input type=\"button\" value=\"No location selected\">";
 //	document.getElementById("correction_map").innerHTML = "<a href=\"javascript:drawFeatureOn();\">Correct by Map</a>";
@@ -167,9 +175,9 @@ function init(lonmin,latmin,lonmax,latmax,pid,WFSHOST) {
 		    url: "http://"+WFSHOST+"/geoserver/wfs",	
 		    featureNS :  "http://www.opengeospatial.net/cite",
 		    maxExtent: mapextent_wgs84,
-		    featureType: "allworldbank_ibrdida",
+		    featureType: "adbprojects",
 		    geometryName: "the_geom",
-		    schema: "http://"+WFSHOST+"/geoserver/wfs/DescribeFeatureType?version=1.1.0&typename=cite:allworldbank_ibrdida"
+		    schema: "http://"+WFSHOST+"/geoserver/wfs/DescribeFeatureType?version=1.1.0&typename=cite:adbprojects"
 		})
 	    ,eventListeners: {
 		"loadstart": function(){

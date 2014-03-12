@@ -17,7 +17,7 @@ $stm = $db->prepare("SELECT ST_XMax(ST_Collect(the_geom))
                     , ST_XMin(ST_Collect(the_geom))
                     , ST_YMax(ST_Collect(the_geom))
                     , ST_Ymin(ST_Collect(the_geom))
-                     FROM allworldbank_ibrdida
+                     FROM adbprojects
                      WHERE project_id = ?;"
 		    ,array('text')
 		    ,array('float','float','float','float')
@@ -57,14 +57,14 @@ while ($row = $result->fetchRow(DB2_FETCHMODE_ORDERED)) {
     <table width="100%" height="100%" cellpadding="0" cellspacing="0" >
       <tr height="30px">
 	<td align="center" class="item" colspan="2"><div id="nodelist"></div></td></tr>
-	<tr><td width="350px" valign="top">
+	<tr><td width="30%" valign="top">
 	  <table border="1" width="100%" cellpadding="5px">
-	    <tr><td><div id="project_id">Project ID:</div></td></tr>
-	    <tr><td><div id="project_title">Project Title:</div></td></tr>
+	    <tr><td><div id="project_id">Project No.:</div></td></tr>
+	    <tr><td><div id="project_title">Project Name:</div></td></tr>
 	    <tr><td><div id="country">Country:</div></td></tr>
+		<tr><td><div id="approval_nos">Approval No.:</div></td></tr>
 	    <tr><td><div id="adm1">Adm1:</div></td></tr>
 	    <tr><td><div id="adm2">Adm2:</div></td></tr>
-	    <tr><td><div id="results">Results:</div></td></tr>
 	    <form name="validation">
 	      <tr id="vi"><td>Validation status - <br> Please click a symbol of location on the map.</td></tr>
 		<tr id="correction">
