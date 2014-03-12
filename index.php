@@ -66,8 +66,8 @@ while ($row = $result->fetchRow(DB2_FETCHMODE_ORDERED)) {
 	    <tr><td><div id="adm1">Adm1:</div></td></tr>
 	    <tr><td><div id="adm2">Adm2:</div></td></tr>
 	    <form name="validation">
-	      <tr id="vi"><td>Validation status - <br> Please click a symbol of location on the map.</td></tr>
-		<tr id="correction">
+	      <tr><td id="vi">Validation status - <br> Please click a symbol of location on the map.</td></tr>
+		<tr><td id="correction"></td>
 		</tr>
 	    </form>
 	  </table>

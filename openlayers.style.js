@@ -1,8 +1,8 @@
 var style = new OpenLayers.Style(
 	{
-		graphicWidth: 17,
-		graphicHeight: 20,
-		graphicYOffset: -23, // shift graphic up 28 pixels
+	    graphicWidth: 17,
+	    graphicHeight: 20,
+	    graphicYOffset: -23 // shift graphic up 28 pixels
 	},
 	{
 		rules: [
@@ -43,7 +43,7 @@ var selected = new OpenLayers.Style(
 	{
 		graphicWidth: 32,
 		graphicHeight: 38,
-		graphicYOffset: -40, // shift graphic up 28 pixels
+		graphicYOffset: -40 // shift graphic up 28 pixels
 	},
 	{
 		rules: [
