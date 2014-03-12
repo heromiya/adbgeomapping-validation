@@ -1,5 +1,5 @@
 <?php
-include 'var.php';
+include '.var.php';
 require_once 'MDB2.php';
 $db = MDB2::connect('pgsql://heromiya@'.$DBHOST.'/adbgeomapping?charset=utf8');
 if(PEAR::isError($db)) {
