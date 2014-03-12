@@ -1,4 +1,6 @@
 var selectControl, selectedFeature, map1,attribute, draw,wfs_correction_layer,modify;
+var WGS84 = new OpenLayers.Projection("EPSG:4326");
+var TMS = new OpenLayers.Projection("EPSG:900913");
 
 function showMsg(szMessage) {
     document.getElementById("nodelist").innerHTML = szMessage;
@@ -12,6 +14,8 @@ var saveStrategy = new OpenLayers.Strategy.Save();
 saveStrategy.events.register("success", '', showSuccessMsg);
 saveStrategy.events.register("failure", '', showFailureMsg);
 saveStrategy.auto = true;
+
+var refreshStrategy = new OpenLayers.Strategy.Refresh();
 
 function attributeStr(feature){
     str = '<tr><td id="vi">Validation status - Location is:<select name="correct" onChange="updateAttributes(attribute,this.options[this.options.selectedIndex].value);"><option value=""'
@@ -49,7 +53,7 @@ function onFeatureSelect(feature) {
     }
     attributeStr(feature);
     if(feature.attributes.validation == 'incorrect') {
-	document.getElementById("correction").innerHTML = '<tr><td id="correction">If the location is not correct, please provide the correction information in the box below:<br><div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);" onKeyUp="onBlurCorrectionText(this.value);">'+correction_text+'</textarea></div>Optional: Correct location on the map.<div id="correction_map"><input type="button" value="Correct by Map" onClick="drawFeatureOn();"></div><input type="button" value="Send" onClick="selectControl.unselect(selectedFeature);"></td></tr>';
+	document.getElementById("correction").innerHTML = '<tr><td id="correction">If the location is not correct, please provide the correction information in the box below:<br><div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);" onKeyUp="onBlurCorrectionText(this.value);">'+correction_text+'</textarea></div>Optional: Correct location on the map.<div id="correction_map"><input type="button" value="Correct by Map" onClick="drawFeatureOn();"><input type="button" value="Reset location" onClick="resetLocation();"></div><input type="button" value="Send" onClick="selectControl.unselect(selectedFeature);"></td></tr>';
     }
 }
 
@@ -85,7 +89,7 @@ function onFeatureUnselect(feature) {
 function updateAttributes(attribute,value,text){
     selectedFeature.attributes.validation = value;
     if(value == 'incorrect') {
-	document.getElementById("correction").innerHTML = '<tr id="correction"><td>*If the location is not correct, please provide the correction information in the box below:<br><div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);" onKeyUp="onBlurCorrectionText(this.value);"></textarea></div>Optional: Correct location on the map.<div id="correction_map"><input type="button" value="No location selected"></div><br><input type="button" value="Send" onClick="selectControl.unselect(selectedFeature);"></td></tr>';
+	document.getElementById("correction").innerHTML = '<tr id="correction"><td>*If the location is not correct, please provide the correction information in the box below:<br><div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);" onKeyUp="onBlurCorrectionText(this.value);"></textarea></div>Optional: Correct location on the map.<div id="correction_map"><input type="button" value="Correct by Map" onClick="drawFeatureOn();"><input type="button" value="Reset location" onClick="resetLocation();"></div><br><input type="button" value="Send" onClick="selectControl.unselect(selectedFeature);"></td></tr>';
     }else{
 	document.getElementById("correction").innerHTML = '<tr id="correction"></tr>';
     }
@@ -113,13 +117,26 @@ function drawFeatureOn(){
     }else{
 	modify.feature = selectedFeature;
 	modify.activate();
-	document.getElementById("correction_map").innerHTML = '<input type="button" value="Finish Correction" onClick="drawFeatureOff();">';
+	document.getElementById("correction_map").innerHTML = '<input type="button" value="Finish Correction" onClick="drawFeatureOff();"><input type="button" value="Reset location" onClick="resetLocation();">';
     }
 }
 
 function drawFeatureOff(){
     modify.deactivate();
-    document.getElementById("correction_map").innerHTML = "<input type=\"button\" value=\"Correct by Map\" onClick=\"drawFeatureOn();\">";
+    document.getElementById("correction_map").innerHTML = '<input type="button" value="Correct by Map" onClick="drawFeatureOn();"><input type="button" value="Reset location" onClick="resetLocation();">';
+    selectControl.unselect(selectedFeature);
+}
+
+function resetLocation(){
+	var point_wgs84 = new OpenLayers.Geometry.Point();
+
+	point_wgs84.x = selectedFeature.attributes.longitude;
+	point_wgs84.y = selectedFeature.attributes.latitude;
+	point_tms = point_wgs84.transform(WGS84,TMS);
+	selectedFeature.geometry.x = point_tms.x;
+	selectedFeature.geometry.y = point_tms.y;
+	selectedFeature.state = OpenLayers.State.UPDATE;
+	saveStrategy.save();
     selectControl.unselect(selectedFeature);
 }
 
@@ -160,6 +177,7 @@ function init(lonmin,latmin,lonmax,latmax,pid,WFSHOST) {
 	    strategies: [
 		new OpenLayers.Strategy.BBOX()
 		,saveStrategy
+		,refreshStrategy
 	    ]
 	    ,styleMap: new OpenLayers.StyleMap(StyleMapOpt)
 	    ,protocol: new OpenLayers.Protocol.WFS(

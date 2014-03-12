@@ -45,6 +45,7 @@ while ($row = $result->fetchRow(DB2_FETCHMODE_ORDERED)) {
 <html>
   <head>
     <script type="text/javascript" src="OpenLayers-2.13.1/OpenLayers.js"></script> 
+    <script type="text/javascript" src="proj4js-compressed.js"></script> 
     <!--<script type="text/javascript" src="googlemapsapis.js"></script>-->
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&language=en"></script>
     <script type="text/javascript" src="maplayers.js"></script>
