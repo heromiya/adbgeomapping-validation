@@ -44,17 +44,34 @@ function onFeatureSelect(feature) {
     document.getElementById("results").innerHTML = "Results: " + feature.attributes.results;
 	attributeStr(feature);
 	if(feature.attributes.validation == 'incorrect') {
-		document.getElementById("correction").innerHTML = '<tr id="correction"><td>*If the location is not correct, please provide the correction information in the box below:<br><div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);"></textarea></div>Optional: Correct location on the map.<div id="correction_map"><input type="button" value="No location selected"></div><input type="button" value="Send" onClick="selectControl.unselect(selectedFeature);"></td></tr>';
-		document.getElementById("correction_text").innerHTML = "<textarea name=\"correction_text\" rows=\"4\" cols=\"40\" onChange=\"updateCorrectionText(attribute,this.value)\">"+correction_text+"</textarea>";
-		document.getElementById("correction_map").innerHTML = "<input type=\"button\" value=\"Correct by Map\" onClick=\"drawFeatureOn();\">";
+		document.getElementById("correction").innerHTML = '<tr id="correction"><td>*If the location is not correct, please provide the correction information in the box below:<br><div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);" onKeyUp="onBlurCorrectionText(this.value);">'+correction_text+'</textarea></div>Optional: Correct location on the map.<div id="correction_map"><input type="button" value="Correct by Map" onClick="drawFeatureOn();"></div><input type="button" value="Send" onClick="selectControl.unselect(selectedFeature);"></td></tr>';
 	}
 }
+
+function onBlurCorrectionText(text){
+	selectedFeature.attributes.correction_text = text;
+	//feature.state = OpenLayers.State.UPDATE;
+	//saveStrategy.save();
+}
+
 function onFeatureUnselect(feature) {
-	if(feature.attributes.validation == 'incorrect'
+	/*if(feature.attributes.validation == 'incorrect'){
+		feature.attributes.correction_text = document.validation.correction_text;
+		//feature.state = OpenLayers.State.UPDATE;
+		//saveStrategy.save();
+	}
+	alert(feature.attributes.validation);
+	alert(feature.attributes.correction_text);*/
+	//document.validation.blur();
+	if(feature.attributes.validation == 'incorrect'	
 		&& (feature.attributes.correction_text == ''
 		|| feature.attributes.correction_text == null)) {
+
 		alert("Please provide correction information to the text box.");
-		selectControl.select(selectedFeature);
+		feature.attributes.validation = '';
+		feature.state = OpenLayers.State.UPDATE;
+		saveStrategy.save();
+		selectControl.select(feature);
 		//break;
 	}else{
 		modify.deactivate();
@@ -73,7 +90,7 @@ function onFeatureUnselect(feature) {
 function updateAttributes(attribute,value,text){
     selectedFeature.attributes.validation = value;
 	if(value == 'incorrect') {
-		document.getElementById("correction").innerHTML = '<tr id="correction"><td>*If the location is not correct, please provide the correction information in the box below:<br><div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);"></textarea></div>Optional: Correct location on the map.<div id="correction_map"><input type="button" value="No location selected"></div><br><input type="button" value="Send" onClick="selectControl.unselect(selectedFeature);"></td></tr>';
+		document.getElementById("correction").innerHTML = '<tr id="correction"><td>*If the location is not correct, please provide the correction information in the box below:<br><div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);" onKeyUp="onBlurCorrectionText(this.value);"></textarea></div>Optional: Correct location on the map.<div id="correction_map"><input type="button" value="No location selected"></div><br><input type="button" value="Send" onClick="selectControl.unselect(selectedFeature);"></td></tr>';
 	}else{
 		document.getElementById("correction").innerHTML = '<tr id="correction"></tr>';
 	}
@@ -182,7 +199,7 @@ function init(lonmin,latmin,lonmax,latmax,pid,WFSHOST) {
 			
 //	    event.feature.state = OpenLayers.State.UPDATE;
 //	    saveStrategy.save();
-			selectControl.unselect(selectedFeature);
+//			selectControl.unselect(selectedFeature);
 		},
 		"beforefeatureadded": function(event){
 			feature = event.feature;
