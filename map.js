@@ -1,4 +1,4 @@
-var selectControl, selectedFeature, map1,attribute, draw,wfs_correction_layer,modify;
+var selectControl, selectedFeature, map1,attribute, draw,wfs_correction_layer,modify,map1extent;
 var WGS84 = new OpenLayers.Projection("EPSG:4326");
 var TMS = new OpenLayers.Projection("EPSG:900913");
 
@@ -16,6 +16,10 @@ saveStrategy.events.register("failure", '', showFailureMsg);
 saveStrategy.auto = true;
 
 var refreshStrategy = new OpenLayers.Strategy.Refresh();
+
+function zoomToDefault(){
+	map1.zoomToExtent(map1extent);
+}
 
 function attributeStr(feature){
     str = '<tr><td id="vi">Validation status - Location is:<select name="correct" onChange="updateAttributes(attribute,this.options[this.options.selectedIndex].value);"><option value=""'
@@ -145,7 +149,7 @@ function init(lonmin,latmin,lonmax,latmax,pid,WFSHOST) {
     extlatmin = latmin;
     extlonmax = lonmax;
     extlatmax = latmax;
-    var map1extent = new OpenLayers.Bounds(lonmin,latmin,lonmax,latmax).transform(WGS84,TMS);
+    map1extent = new OpenLayers.Bounds(lonmin,latmin,lonmax,latmax).transform(WGS84,TMS);
     //var map1extent = new OpenLayers.Bounds(lonmin,latmin,lonmax,latmax);
     var mapextent_wgs84 = new OpenLayers.Bounds(lonmin,latmin,lonmax,latmax);
     var map1Opts = {

@@ -58,7 +58,18 @@ while ($row = $result->fetchRow(DB2_FETCHMODE_ORDERED)) {
     <table width="100%" height="100%" cellpadding="0" cellspacing="0" >
       <tr height="30px">
 	<td align="center" class="item" colspan="2"><div id="nodelist"></div></td></tr>
-	<tr><td width="30%" valign="top">
+	<tr>
+	<td id="col1">
+	  <div id="map1" style="height: 100%; background-color: #808080" unselectable = "on" user-select: none;></div>
+	</td>
+    <td width="30%" valign="top">
+	  <h4 style="margin-left: 10px;">Legend</h4>
+	  <ul style="list-style-type:none;">
+	  <li><img src="OpenLayers-2.13.1/img/marker.png"> Needing validation</li>
+	  <li><img src="OpenLayers-2.13.1/img/marker-blue.png"> Correct</li>
+	  <li><img src="OpenLayers-2.13.1/img/marker-green.png"> Not correct</li>
+	  </ul>
+	  <input type="button" value="Reset map extent" onClick="map1.zoomToExtent(map1extent);">
 	  <table border="1" width="100%" cellpadding="5px">
 	    <tr><td><div id="project_id">Project No.:</div></td></tr>
 	    <tr><td><div id="project_title">Project Name:</div></td></tr>
@@ -72,17 +83,8 @@ while ($row = $result->fetchRow(DB2_FETCHMODE_ORDERED)) {
 		</tr>
 	    </form>
 	  </table>
-	  <h4 style="margin-left: 10px;">Legend</h4>
-	  <ul style="list-style-type:none;">
-	  <li><img src="OpenLayers-2.13.1/img/marker.png"> Needing validation</li>
-	  <li><img src="OpenLayers-2.13.1/img/marker-blue.png"> Correct</li>
-	  <li><img src="OpenLayers-2.13.1/img/marker-green.png"> Not correct</li>
-	  </ul>
 	</td>
-	<td id="col1">
-	  <div id="map1" style="height: 100%; background-color: #808080" unselectable = "on" user-select: none;></div>
-	</td>
-      </tr>
+	  </tr>
     </table>
   </body>
 </html>
