@@ -1,4 +1,4 @@
-var selectControl, selectedFeature, map1,attribute, draw,modify,map1extent;
+var selectControl, selectedFeature, map1,attribute, draw,modify,map1extent,project_id;
 var WGS84 = new OpenLayers.Projection("EPSG:4326");
 var TMS = new OpenLayers.Projection("EPSG:900913");
 var wfs_correction_layer = new OpenLayers.Layer.Vector();
@@ -45,7 +45,7 @@ function checkValidationAll(){
    }else{
 		if(checkValidationAllDone()){
 			alert("All of locations have been validated. Please provide information on mission locations in the text box, if any.");
-			document.getElementById("project_attributes").innerHTML = '<div id="project_attributes" style="padding: 5px;"><span style="color:red;">Step 4: Provide information on missing locations, if any.</span><form name="validation"><textarea name="missing_location" rows="4" cols="40" style="width:100%"></textarea><input type="button" value="Let me FINISH"></form>If you need to correct the results, please click the button below or a symbol on the map.</div><input type="button" onClick="correctResults();" value="Correct the results">';
+			document.getElementById("project_attributes").innerHTML = '<div id="project_attributes" style="padding: 5px;"><span style="color:red;">Step 4: Provide information on missing locations, if any.</span><form action="post.php" method="post" name="validation"><input type="hidden" name="pid" value="'+project_id+'"><textarea name="missing_location" rows="4" cols="40" style="width:100%"></textarea><input type="submit" value="Let me FINISH" ></form>If you need to correct the results, please click the button below or a symbol on the map.</div><input type="button" onClick="correctResults();" value="Correct the results">';
 			selectControl.unselect(selectedFeature);
 		}
 	}
@@ -53,7 +53,7 @@ function checkValidationAll(){
 }
 
 function correctResults(){
-	document.getElementById("project_attributes").innerHTML = '<div id="project_attributes"><table border="1" width="100%" cellpadding="5px"><tr><td id="instruction">Step 1: Click a "red" location <img src="OpenLayers-2.13.1/img/marker.png"> for validation.</td></tr><tr><td><div id="project_id">Project No.:</div></td></tr><tr><td><div id="project_title">Project Name:</div></td></tr><tr><td><div id="country">Country:</div></td></tr><tr><td><div id="approval_nos">Approval No.:</div></td></tr><tr><td><div id="adm1">Adm1:</div></td></tr><tr><td><div id="adm2">Adm2:</div></td></tr><form name="validation"><tr><td id="vi"></td></tr><tr><td id="correction"></td></tr></form></table></div>';
+	document.getElementById("project_attributes").innerHTML = '<div id="project_attributes"><table border="1" width="100%" cellpadding="5px"><tr><td id="instruction">Step 1: Click a "red" location <img src="OpenLayers-2.13.1/img/marker.png"> for validation.</td></tr><tr><td><div id="country">Country:</div></td></tr><tr><td><div id="project_id">Project No:</div></td></tr><tr><td><div id="project_title">Project Name:</div></td></tr><tr><td><div id="approval_nos">Approval No:</div></td></tr><tr><td><div id="adm1">Adm1:</div></td></tr><tr><td><div id="adm2">Adm2:</div></td></tr><form name="validation"><tr><td id="vi"></td></tr><tr><td id="correction"></td></tr></form></table></div>';
 
 }
 
@@ -94,17 +94,17 @@ function onFeatureSelect(feature) {
 	selectControl.deactivate();
     selectedFeature = feature;
 	selectControl.highlight(feature);
-	document.getElementById("project_attributes").innerHTML = '<div id="project_attributes"><table border="1" width="100%" cellpadding="5px"><tr><td id="instruction">Step 1: Click a "red" location <img src="OpenLayers-2.13.1/img/marker.png"> for validation.</td></tr><tr><td><div id="project_id">Project No.:</div></td></tr><tr><td><div id="project_title">Project Name:</div></td></tr><tr><td><div id="country">Country:</div></td></tr><tr><td><div id="approval_nos">Approval No.:</div></td></tr><tr><td><div id="adm1">Adm1:</div></td></tr><tr><td><div id="adm2">Adm2:</div></td></tr><form name="validation"><tr><td id="vi"></td></tr><tr><td id="correction"></td></tr></form></table></div>';
+	document.getElementById("project_attributes").innerHTML = '<div id="project_attributes"><table border="1" width="100%" cellpadding="5px"><tr><td id="instruction">Step 1: Click a "red" location <img src="OpenLayers-2.13.1/img/marker.png"> for validation.</td></tr><tr><td><div id="country">Country:</div></td></tr><tr><td><div id="project_id">Project No:</div></td></tr><tr><td><div id="project_title">Project Name:</div></td></tr><tr><td><div id="approval_nos">Approval No:</div></td></tr><tr><td><div id="adm1">Adm1:</div></td></tr><tr><td><div id="adm2">Adm2:</div></td></tr><form name="validation"><tr><td id="vi"></td></tr><tr><td id="correction"></td></tr></form></table></div>';
     
     if(isnull_correction_text(feature)){
 		correction_text = '';
     }else{
 		correction_text = feature.attributes.correction_text;
     }
-    document.getElementById("project_id").innerHTML = "Project No.: " + feature.attributes.project_id;
+    document.getElementById("project_id").innerHTML = "Project No: " + feature.attributes.project_id;
     document.getElementById("project_title").innerHTML = "Project Name: " + feature.attributes.title;
     document.getElementById("country").innerHTML = "Country: " + feature.attributes.country;
-    document.getElementById("approval_nos").innerHTML = "Approval No.: " + feature.attributes.approval_nos;
+    document.getElementById("approval_nos").innerHTML = "Approval No: " + feature.attributes.approval_nos;
     if(feature.attributes.adm1_name == null){
 		document.getElementById("adm1").innerHTML = "Adm1: ";
     }else{
@@ -147,10 +147,10 @@ function onFeatureUnselect(feature) {
 		alertProvideTextInfo();
    }else if(!checkValidationAllDone()){
 		document.getElementById("instruction").innerHTML = '<td id="instruction">Step 1: Click a "red" location <img src="OpenLayers-2.13.1/img/marker.png"> for validation.</td>'
-		document.getElementById("project_id").innerHTML = "Project No.: ";
+		document.getElementById("project_id").innerHTML = "Project No: ";
 		document.getElementById("project_title").innerHTML = "Project Name: ";
 		document.getElementById("country").innerHTML = "Country: ";
-		document.getElementById("approval_nos").innerHTML = "Approval No.: ";
+		document.getElementById("approval_nos").innerHTML = "Approval No: ";
 		document.getElementById("adm1").innerHTML = "Adm1: ";
 		document.getElementById("adm2").innerHTML = "Adm2: ";
 		document.getElementById("vi").innerHTML = '<tr id="vi"><td>Validation status - </td></tr>';
@@ -182,14 +182,15 @@ function drawFeatureOn(){
     }else{
 	modify.feature = selectedFeature;
 	modify.activate();
-	document.getElementById("correction_map").innerHTML = '<input type="button" value="Submit the correction" onClick="drawFeatureOff(); checkValidationAll();"><input type="button" value="Let me quit. Restore the original location." onClick="resetLocation();">';
+	document.getElementById("correction_map").innerHTML = '<input type="button" value="Submit the correction" onClick="checkValidationAll(); drawFeatureOff();"><input type="button" value="Let me quit. Restore the original location." onClick="resetLocation();">';
     }
 }
 
 function drawFeatureOff(){
     modify.deactivate();
-    document.getElementById("correction_map").innerHTML = '<input type="button" value="Yes, let me try." onClick="drawFeatureOn();"><input type="button" value="No, thanks." onClick="checkValidationAll(); selectControl.unselect(selectedFeature);">';
+    //document.getElementById("correction_map").innerHTML = '<input type="button" value="Yes, let me try." onClick="drawFeatureOn();"><input type="button" value="No, thanks." onClick="checkValidationAll(); selectControl.unselect(selectedFeature);">';
 	selectedFeature.attributes.validation = 'userlocation';
+    selectControl.activate();
     selectControl.unselect(selectedFeature);
 }
 
@@ -208,11 +209,12 @@ function resetLocation(){
 }
 
 function init(lonmin,latmin,lonmax,latmax,pid,WFSHOST) {
-    extlonmin = lonmin;
+    project_id=pid;
+	extlonmin = lonmin;
     extlatmin = latmin;
     extlonmax = lonmax;
     extlatmax = latmax;
-    map1extent = new OpenLayers.Bounds(lonmin,latmin,lonmax,latmax).transform(WGS84,TMS);
+	map1extent = new OpenLayers.Bounds(lonmin,latmin,lonmax,latmax).transform(WGS84,TMS);
     //var map1extent = new OpenLayers.Bounds(lonmin,latmin,lonmax,latmax);
     var mapextent_wgs84 = new OpenLayers.Bounds(lonmin,latmin,lonmax,latmax);
     var map1Opts = {
@@ -220,12 +222,13 @@ function init(lonmin,latmin,lonmax,latmax,pid,WFSHOST) {
 	,projection: TMS
 	,units: 'm'
 	,numZoomLevels: 20
-	,maxExtent: map1extent
+	//,maxExtent: map1extent
+	,restrictedExtent: map1extent
 	,controls:[
 	    new OpenLayers.Control.Navigation()
 	    ,new OpenLayers.Control.PanZoom()
 	    ,new OpenLayers.Control.MousePosition()
-	    ,new OpenLayers.Control.KeyboardDefaults() 
+	    //,new OpenLayers.Control.KeyboardDefaults() 
 	    ,new OpenLayers.Control.Scale()
 	    ,new OpenLayers.Control.LayerSwitcher()
 	]
@@ -300,11 +303,35 @@ function init(lonmin,latmin,lonmax,latmax,pid,WFSHOST) {
     );
 
     modify = new OpenLayers.Control.ModifyFeature(
-	wfs_correction_layer
+		wfs_correction_layer
+		,{
+			clickout: false
+		}
     );
     
-    map1.addLayers([google_maps,google_satellite,google_hybrid,osm,bing_road,bing_aerial,bing_hybrid,wfs_correction_layer]);
+	var rect_style = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+	rect_style.graphicOpacity = 1;
+	rect_style.strokeWidth = 2; 
+	rect_style.strokeColor = "#FF0033";
+	rect_style.strokeOpacity = 1;
+	
+	var rectangle_map1 = new OpenLayers.Feature.Vector(
+		new OpenLayers.Geometry.LineString(
+			[
+				new OpenLayers.Geometry.Point(lonmin, latmin).transform(WGS84,TMS)
+				,new OpenLayers.Geometry.Point(lonmin, latmax).transform(WGS84,TMS)
+				,new OpenLayers.Geometry.Point(lonmax, latmax).transform(WGS84,TMS)
+				,new OpenLayers.Geometry.Point(lonmax, latmin).transform(WGS84,TMS)
+				,new OpenLayers.Geometry.Point(lonmin, latmin).transform(WGS84,TMS)
+			]
+			)
+	);
+	rectangle_map1.style=rect_style;
+	
+    var mapextentPolygon_map1 = new OpenLayers.Layer.Vector("Target extent");
+	mapextentPolygon_map1.addFeatures(rectangle_map1);
     //map1.addLayers([wms,wfs_correction_layer]);
+    map1.addLayers([google_maps,google_satellite,google_hybrid,osm,bing_road,bing_aerial,bing_hybrid,wfs_correction_layer,mapextentPolygon_map1]);
     map1.zoomToExtent(map1extent);
 
     selectControl = new OpenLayers.Control.SelectFeature(

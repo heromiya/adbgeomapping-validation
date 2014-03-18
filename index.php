@@ -35,10 +35,12 @@ exit();
 }
 
 while ($row = $result->fetchRow(DB2_FETCHMODE_ORDERED)) {
-	$lonmax=$row[0];
-	$lonmin=$row[1];
-	$latmax=$row[2];
-	$latmin=$row[3];
+	$lonbuf=0.5*($row[0]-$row[1]);
+	$latbuf=0.5*($row[2]-$row[3]);
+	$lonmax=$row[0]+$lonbuf;
+	$lonmin=$row[1]-$lonbuf;
+	$latmax=$row[2]+$latbuf;
+	$latmin=$row[3]-$latbuf;
 }
 ?>
 
@@ -65,21 +67,21 @@ while ($row = $result->fetchRow(DB2_FETCHMODE_ORDERED)) {
     <td width="30%" valign="top">
 	  <h4 style="margin-left: 10px;">Validation Status</h4>
 	  <ul style="list-style-type:none;">
-	  <li><img src="OpenLayers-2.13.1/img/marker.png"> Needing validation</li>
+	  <li><img src="OpenLayers-2.13.1/img/marker.png"> Not yet validated</li>
 	  <li><img src="OpenLayers-2.13.1/img/marker-green.png"> Correct</li>
-	  <li><img src="OpenLayers-2.13.1/img/marker-gold.png"> Not correct</li>
+	  <li><img src="OpenLayers-2.13.1/img/marker-gold.png"> NOT correct</li>
 	  <li><img src="OpenLayers-2.13.1/img/marker-blue.png"> Corrected by validator</li>
 	  </ul>
 	  <input type="button" value="Reset map extent" onClick="map1.zoomToExtent(map1extent);">
 		<div id="project_attributes">
 	  <table border="1" width="100%" cellpadding="5px">
 		<tr><td id="instruction">Step 1: Click a "red" location <img src="OpenLayers-2.13.1/img/marker.png"> for validation.</td></tr>
-	    <tr><td><div id="project_id">Project No.:</div></td></tr>
-	    <tr><td><div id="project_title">Project Name:</div></td></tr>
 	    <tr><td><div id="country">Country:</div></td></tr>
-		<tr><td><div id="approval_nos">Approval No.:</div></td></tr>
-	    <tr><td><div id="adm1">Adm1:</div></td></tr>
-	    <tr><td><div id="adm2">Adm2:</div></td></tr>
+	    <tr><td><div id="project_id">Project No:</div></td></tr>
+	    <tr><td><div id="project_title">Project Name:</div></td></tr>
+		<tr><td><div id="approval_nos">Approval No:</div></td></tr>
+	    <tr><td><div id="adm1">Location Name-ADM1:</div></td></tr>
+	    <tr><td><div id="adm2">Location Name-ADM2:</div></td></tr>
 	    <form name="validation">
 	      <tr><td id="vi"></td></tr>
 		<tr><td id="correction"></td>
