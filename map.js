@@ -160,7 +160,7 @@ function onFeatureUnselect(feature) {
 function updateAttributes(attribute,value,text){
     selectedFeature.attributes.validation = value;
     if(value == 'incorrect') {
-		document.getElementById("correction").innerHTML = '<tr id="correction"><td><span style="color:red;">Step 3: Provide information for correction.</span><div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);" onKeyUp="onBlurCorrectionText(this.value);"></textarea></div><span style="color:red;">Optional: Correct the location in the map by clicking and dragging.</span><div id="correction_map"><input type="button" value="Yes, let me try." onClick="drawFeatureOn();"><input type="button" value="No, thanks." onClick="checkValidationAll(); selectControl.unselect(selectedFeature);"></div></td></tr>';
+		document.getElementById("correction").innerHTML = '<tr id="correction"><td><span style="color:red;">Step 3: Provide information for correction.</span><div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);" onKeyUp="onBlurCorrectionText(this.value);">'+correction_text+'</textarea></div><span style="color:red;">Optional: Correct the location in the map by clicking and dragging.</span><div id="correction_map"><input type="button" value="Yes, let me try." onClick="drawFeatureOn();"><input type="button" value="No, thanks." onClick="checkValidationAll(); selectControl.unselect(selectedFeature);"></div></td></tr>';
     }else{
 		document.getElementById("correction").innerHTML = '<td id="correction"><input type="button" value="Submit" onClick="	checkValidationAll(); selectControl.unselect(selectedFeature);"></td>';
     }
@@ -221,13 +221,14 @@ function init(lonmin,latmin,lonmax,latmax,pid,WFSHOST) {
 	displayProjection: WGS84
 	,projection: TMS
 	,units: 'm'
-	,numZoomLevels: 20
+	//,numZoomLevels: 20
 	//,maxExtent: map1extent
 	,restrictedExtent: map1extent
+	,minScale: 3000000
 	,controls:[
 	    new OpenLayers.Control.Navigation()
-	    ,new OpenLayers.Control.PanZoom()
-	    ,new OpenLayers.Control.MousePosition()
+	    //,new OpenLayers.Control.PanZoom()
+	    //,new OpenLayers.Control.MousePosition()
 	    //,new OpenLayers.Control.KeyboardDefaults() 
 	    ,new OpenLayers.Control.Scale()
 	    ,new OpenLayers.Control.LayerSwitcher()
