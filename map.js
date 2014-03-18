@@ -9,47 +9,47 @@ function showMsg(szMessage) {
 }
 
 function isnull_correction_text(feature){
-	if (feature.attributes.correction_text == ''
+    if (feature.attributes.correction_text == ''
 	|| feature.attributes.correction_text == null
 	|| feature.attributes.correction_text == 'NULL') {
-		return true;
-	}
+	return true;
+    }
 }
 
 function isnull_validation(feature){
-	if (feature.attributes.validation == ''
+    if (feature.attributes.validation == ''
 	|| feature.attributes.validation == null
 	|| feature.attributes.validation == 'NULL') {
-		return true;
-	}
+	return true;
+    }
 }
 
 function checkValidationAllDone(){
-	flg=0;
-	for(i=0; i<wfs_correction_layer.features.length; i++){
-		if(isnull_validation(wfs_correction_layer.features[i])) {
-				flg=1;
-			}
+    flg=0;
+    for(i=0; i<wfs_correction_layer.features.length; i++){
+	if(isnull_validation(wfs_correction_layer.features[i])) {
+	    flg=1;
 	}
-	if(flg==0) {
-		return true;
-	}else{
-		return false;
-	}
+    }
+    if(flg==0) {
+	return true;
+    }else{
+	return false;
+    }
 }
 
 function checkValidationAll(){
     if((selectedFeature.attributes.validation == 'incorrect' || selectedFeature.attributes.validation == 'userlocation')	
-       && isnull_correction_text(selectedFeature)) {
-		//alertProvideTextInfo();
-   }else{
-		if(checkValidationAllDone()){
-			alert("All of locations have been validated. Please provide information on mission locations in the text box, if any.");
-			document.getElementById("project_attributes").innerHTML = '<div id="project_attributes" style="padding: 5px;"><span style="color:red;">Step 4: Provide information on missing locations, if any.</span><form action="post.php" method="post" name="validation"><input type="hidden" name="pid" value="'+project_id+'"><textarea name="missing_location" rows="4" cols="40" style="width:100%"></textarea><input type="submit" value="Let me FINISH" ></form>If you need to correct the results, please click the button below or a symbol on the map.</div><input type="button" onClick="correctResults();" value="Correct the results">';
-			selectControl.unselect(selectedFeature);
-		}
+	&& isnull_correction_text(selectedFeature)) {
+	//alertProvideTextInfo();
+    }else{
+	if(checkValidationAllDone()){
+	    alert("All of locations have been validated. Please provide information on mission locations in the text box, if any.");
+	    document.getElementById("project_attributes").innerHTML = '<div id="project_attributes" style="padding: 5px;"><span style="color:red;">Step 4: Provide information on missing locations, if any.</span><form action="post.php" method="post" name="validation"><input type="hidden" name="pid" value="'+project_id+'"><textarea name="missing_location" rows="4" cols="40" style="width:100%"></textarea><input type="submit" value="Let me FINISH" ></form>If you need to correct the results, please click the button below or a symbol on the map.</div><input type="button" onClick="correctResults();" value="Correct the results">';
+	    selectControl.unselect(selectedFeature);
 	}
-	selectControl.activate();
+    }
+    selectControl.activate();
 }
 
 function correctResults(){
@@ -210,26 +210,19 @@ function resetLocation(){
 
 function init(lonmin,latmin,lonmax,latmax,pid,WFSHOST) {
     project_id=pid;
-	extlonmin = lonmin;
+    extlonmin = lonmin;
     extlatmin = latmin;
     extlonmax = lonmax;
     extlatmax = latmax;
-	map1extent = new OpenLayers.Bounds(lonmin,latmin,lonmax,latmax).transform(WGS84,TMS);
-    //var map1extent = new OpenLayers.Bounds(lonmin,latmin,lonmax,latmax);
+    map1extent = new OpenLayers.Bounds(lonmin,latmin,lonmax,latmax).transform(WGS84,TMS);
     var mapextent_wgs84 = new OpenLayers.Bounds(lonmin,latmin,lonmax,latmax);
     var map1Opts = {
 	displayProjection: WGS84
 	,projection: TMS
 	,units: 'm'
-	//,numZoomLevels: 20
-	//,maxExtent: map1extent
 	,restrictedExtent: map1extent
-	,minScale: 3000000
 	,controls:[
 	    new OpenLayers.Control.Navigation()
-	    //,new OpenLayers.Control.PanZoom()
-	    //,new OpenLayers.Control.MousePosition()
-	    //,new OpenLayers.Control.KeyboardDefaults() 
 	    ,new OpenLayers.Control.Scale()
 	    ,new OpenLayers.Control.LayerSwitcher()
 	]
@@ -255,7 +248,6 @@ function init(lonmin,latmin,lonmax,latmax,pid,WFSHOST) {
 		{
 		    version: "1.1.0",
 		    srsName: "EPSG:900913",
-		    //		    srsName: "EPSG:4326",
 		    url: "http://"+WFSHOST+"/geoserver/wfs",	
 		    featureNS :  "http://www.opengeospatial.net/cite",
 		    maxExtent: mapextent_wgs84,
@@ -336,36 +328,36 @@ function init(lonmin,latmin,lonmax,latmax,pid,WFSHOST) {
     map1.zoomToExtent(map1extent);
 
     selectControl = new OpenLayers.Control.SelectFeature(
-		wfs_correction_layer
-		,{ onSelect: onFeatureSelect
-		   ,onUnselect: onFeatureUnselect
-		   ,clickout: false
-		   ,multiple: false
-		   ,hover: false
-		 }
+	wfs_correction_layer
+	,{ onSelect: onFeatureSelect
+	   ,onUnselect: onFeatureUnselect
+	   ,clickout: false
+	   ,multiple: false
+	   ,hover: false
+	 }
     );
     map1.addControl(selectControl);
     map1.addControl(modify);
     selectControl.activate();
     saveStrategy.activate();
 
-	window.onbeforeunload = function (e) {
-	  var e = e || window.event;
-		flg=0;
-	  // For IE and Firefox prior to version 4
-	  if (e) {
-		for(i=0; i<wfs_correction_layer.features.length; i++){
-			if(isnull_validation(wfs_correction_layer.features[i])) {
-					e.returnValue = "You have not finished validation. Do you want to continue later?";
-				}
+    window.onbeforeunload = function (e) {
+	var e = e || window.event;
+	flg=0;
+	// For IE and Firefox prior to version 4
+	if (e) {
+	    for(i=0; i<wfs_correction_layer.features.length; i++){
+		if(isnull_validation(wfs_correction_layer.features[i])) {
+		    e.returnValue = "You have not finished validation. Do you want to continue later?";
 		}
-	  }
+	    }
+	}
 
-	  // For Safari
-		for(i=0; i<wfs_correction_layer.features.length; i++){
-			if(isnull_validation(wfs_correction_layer.features[i])) {
-					e.returnValue = "You have not finished validation. Do you want to continue later?";
-				}
-		}
-	};	
+	// For Safari
+	for(i=0; i<wfs_correction_layer.features.length; i++){
+	    if(isnull_validation(wfs_correction_layer.features[i])) {
+		e.returnValue = "You have not finished validation. Do you want to continue later?";
+	    }
+	}
+    };	
 };
