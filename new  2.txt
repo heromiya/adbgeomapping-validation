@@ -1,0 +1,4 @@
+<input type="button" value="Reset location" onClick="resetLocation();">
+<input type="button" value="Reset location" onClick="resetLocation();">
+<input type="button" value="Send" onClick="selectControl.unselect(selectedFeature);">
+<br><input type="button" value="Send" onClick="selectControl.unselect(selectedFeature);">

@@ -54,23 +54,26 @@ while ($row = $result->fetchRow(DB2_FETCHMODE_ORDERED)) {
 	<link rel="stylesheet" href="style.css" type="text/css">
     <title>GeoMapping - Validation</title>
   </head>
-  <body onload="init(<?php printf('%lf,%lf,%lf,%lf,\'%s\',\'%s\'',$lonmin,$latmin,$lonmax,$latmax,$pid,$WFSHOST)?>)">
+  <body onload="init(<?php printf('%lf,%lf,%lf,%lf,\'%s\',\'%s\'',$lonmin,$latmin,$lonmax,$latmax,$pid,$WFSHOST)?>);">
     <table width="100%" height="100%" cellpadding="0" cellspacing="0" >
-      <tr height="30px">
+    <tr height="30px">
 	<td align="center" class="item" colspan="2"><div id="nodelist"></div></td></tr>
 	<tr>
 	<td id="col1">
 	  <div id="map1" style="height: 100%; background-color: #808080" unselectable = "on" user-select: none;></div>
 	</td>
     <td width="30%" valign="top">
-	  <h4 style="margin-left: 10px;">Legend</h4>
+	  <h4 style="margin-left: 10px;">Validation Status</h4>
 	  <ul style="list-style-type:none;">
 	  <li><img src="OpenLayers-2.13.1/img/marker.png"> Needing validation</li>
-	  <li><img src="OpenLayers-2.13.1/img/marker-blue.png"> Correct</li>
-	  <li><img src="OpenLayers-2.13.1/img/marker-green.png"> Not correct</li>
+	  <li><img src="OpenLayers-2.13.1/img/marker-green.png"> Correct</li>
+	  <li><img src="OpenLayers-2.13.1/img/marker-gold.png"> Not correct</li>
+	  <li><img src="OpenLayers-2.13.1/img/marker-blue.png"> Corrected by validator</li>
 	  </ul>
 	  <input type="button" value="Reset map extent" onClick="map1.zoomToExtent(map1extent);">
+		<div id="project_attributes">
 	  <table border="1" width="100%" cellpadding="5px">
+		<tr><td id="instruction">Step 1: Click a "red" location <img src="OpenLayers-2.13.1/img/marker.png"> for validation.</td></tr>
 	    <tr><td><div id="project_id">Project No.:</div></td></tr>
 	    <tr><td><div id="project_title">Project Name:</div></td></tr>
 	    <tr><td><div id="country">Country:</div></td></tr>
@@ -78,11 +81,12 @@ while ($row = $result->fetchRow(DB2_FETCHMODE_ORDERED)) {
 	    <tr><td><div id="adm1">Adm1:</div></td></tr>
 	    <tr><td><div id="adm2">Adm2:</div></td></tr>
 	    <form name="validation">
-	      <tr><td id="vi">Validation status - <br> Please click a symbol of location on the map.</td></tr>
+	      <tr><td id="vi"></td></tr>
 		<tr><td id="correction"></td>
 		</tr>
 	    </form>
 	  </table>
+	  </div>
 	</td>
 	  </tr>
     </table>

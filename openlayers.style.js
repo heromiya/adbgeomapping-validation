@@ -15,7 +15,7 @@ var style = new OpenLayers.Style(
 				}),
 				// if a feature matches the above filter, use this symbolizer
 				symbolizer: {
-					externalGraphic: "OpenLayers-2.13.1/img/marker-blue.png"
+					externalGraphic: "OpenLayers-2.13.1/img/marker-green.png"
 				}
 			}),
 			new OpenLayers.Rule({
@@ -25,7 +25,17 @@ var style = new OpenLayers.Style(
 					value: "incorrect"
 				}),
 				symbolizer: {
-					externalGraphic: "OpenLayers-2.13.1/img/marker-green.png"
+					externalGraphic: "OpenLayers-2.13.1/img/marker-gold.png"
+				}
+			}),
+			new OpenLayers.Rule({
+				filter: new OpenLayers.Filter.Comparison({
+					type: OpenLayers.Filter.Comparison.EQUAL_TO,
+					property: "validation",
+					value: "userlocation"
+				}),
+				symbolizer: {
+					externalGraphic: "OpenLayers-2.13.1/img/marker-blue.png"
 				}
 			}),
 			new OpenLayers.Rule({
@@ -56,7 +66,7 @@ var selected = new OpenLayers.Style(
 				}),
 				// if a feature matches the above filter, use this symbolizer
 				symbolizer: {
-					externalGraphic: "OpenLayers-2.13.1/img/marker-blue.png"
+					externalGraphic: "OpenLayers-2.13.1/img/marker-green.png"
 				}
 			}),
 			new OpenLayers.Rule({
@@ -66,7 +76,17 @@ var selected = new OpenLayers.Style(
 					value: "incorrect"
 				}),
 				symbolizer: {
-					externalGraphic: "OpenLayers-2.13.1/img/marker-green.png"
+					externalGraphic: "OpenLayers-2.13.1/img/marker-gold.png"
+				}
+			}),
+			new OpenLayers.Rule({
+				filter: new OpenLayers.Filter.Comparison({
+					type: OpenLayers.Filter.Comparison.EQUAL_TO,
+					property: "validation",
+					value: "userlocation"
+				}),
+				symbolizer: {
+					externalGraphic: "OpenLayers-2.13.1/img/marker-blue.png"
 				}
 			}),
 			new OpenLayers.Rule({
