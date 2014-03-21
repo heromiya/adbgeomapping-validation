@@ -45,7 +45,15 @@ function checkValidationAll(){
     }else{
 	if(checkValidationAllDone()){
 	    //alert("All of locations have been validated. Please provide information on mission locations in the text box, if any.");
-	    document.getElementById("project_attributes").innerHTML = '<div id="project_attributes" style="padding: 5px;"><span style="color:red;">Step 4: Provide information on missing locations, if any.</span><form action="post.php" method="post" name="validation"><input type="hidden" name="pid" value="'+project_id+'"><textarea name="missing_location" rows="4" cols="40" style="width:100%"></textarea></form>You can go back to Step 1 to correct your validation.</div><input type="button" onClick="correctResults();" value="Correct validation"><br><input type="submit" value="FINISH">';
+	    document.getElementById("project_attributes").innerHTML = 
+		'<div id="project_attributes" style="padding: 5px;">'
+		+'<span style="color:red;">Step 4: Provide information on missing locations, if any.</span>'
+		+'<form action="post.php" method="post" name="validation">'
+		+'<input type="hidden" name="pid" value="'+project_id+'">'
+		+'<textarea name="missing_location" rows="4" cols="40" style="width:100%"></textarea>'
+		+'You can go back to Step 1 to correct your validation.<br>'
+		+'<input type="button" onClick="correctResults();" value="Correct validation"><br>'
+		+'<input type="submit" value="FINISH"></form></div>';
 	    selectControl.unselect(selectedFeature);
 	}
     }
@@ -74,7 +82,7 @@ function zoomToDefault(){
 }
 
 function attributeStr(feature){
-    str = '<tr><td id="vi"><span style="color:red;">Step 2: Validate the location.</span><br>The Location is:<select name="correct" onChange="updateAttributes(attribute,this.options[this.options.selectedIndex].value);"><option value=""'
+    str = '<tr><td id="vi"><span style="color:red;">Step 2: Validate the location.</span><br>The Location is <select name="correct" onChange="updateAttributes(attribute,this.options[this.options.selectedIndex].value);"><option value=""'
     if(isnull_validation(feature)){
 	str += ' selected></option><option value="correct">correct</option><option value="incorrect">NOT correct';
     }else if(feature.attributes.validation == 'correct') {
@@ -87,14 +95,22 @@ function attributeStr(feature){
     document.getElementById("vi").innerHTML = str + '</option></select></td></tr>';
 }
 function onFeatureSelect(feature) {
-	
 	if(selectedFeature != null){
 		selectControl.unhighlight(selectedFeature);
 		}
 	selectControl.deactivate();
     selectedFeature = feature;
 	selectControl.highlight(feature);
-	document.getElementById("project_attributes").innerHTML = '<div id="project_attributes"><table border="1" width="100%" cellpadding="5px"><tr><td id="instruction">Step 1: Click a "red" location <img src="OpenLayers-2.13.1/img/marker.png"> for validation.</td></tr><tr><td><div id="country">Country:</div></td></tr><tr><td><div id="project_id">Project No:</div></td></tr><tr><td><div id="project_title">Project Name:</div></td></tr><tr><td><div id="approval_nos">Approval No:</div></td></tr><tr><td><div id="adm1">Adm1:</div></td></tr><tr><td><div id="adm2">Adm2:</div></td></tr><form name="validation"><tr><td id="vi"></td></tr><tr><td id="correction"></td></tr></form></table></div>';
+	document.getElementById("project_attributes").innerHTML = 
+	'<div id="project_attributes"><table border="1" width="100%" cellpadding="5px">'
+	+'<tr><td id="instruction">Step 1: Click a "red" location <img src="OpenLayers-2.13.1/img/marker.png"> for validation.</td></tr>'
+	+'<tr><td><div id="country">Country:</div></td></tr>'
+	+'<tr><td><div id="project_id">Project No:</div></td></tr>'
+	+'<tr><td><div id="project_title">Project Name:</div></td></tr>'
+	+'<tr><td><div id="approval_nos">Approval No:</div></td></tr>'
+	+'<tr><td><div id="adm1">Adm1:</div></td></tr>'
+	+'<tr><td><div id="adm2">Adm2:</div></td></tr>'
+	+'<form name="validation"><tr><td id="vi"></td></tr><tr><td id="correction"></td></tr></form></table></div>';
     
     if(isnull_correction_text(feature)){
 		correction_text = '';
@@ -117,13 +133,22 @@ function onFeatureSelect(feature) {
     }
     attributeStr(feature);
     if(feature.attributes.validation == 'incorrect' || feature.attributes.validation == 'userlocation') {
-		document.getElementById("correction").innerHTML = '<tr><td id="correction"><span style="color:red;">Step 3: Provide information for correction.</span><div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);" onKeyUp="onBlurCorrectionText(this.value);">'+correction_text+'</textarea></div><span style="color:red;">Optional: Correct the location in the map by clicking and dragging.</span><div id="correction_map"><input type="button" value="Yes, let me try." onClick="drawFeatureOn();"><input type="button" value="No. Submit data." onClick="checkValidationAll(); selectControl.unselect(selectedFeature);"></div></td></tr>';
+		document.getElementById("correction").innerHTML = 
+		'<tr><td id="correction">'
+		+'<span style="color:red;">Step 3: Provide information for correction.</span>'
+		+'<div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);" onKeyUp="onBlurCorrectionText(this.value);">'
+		+correction_text+'</textarea></div>'
+		+'<span style="color:red;">Optional: Correct the location in the map by clicking and dragging.</span>'
+		+'<div id="correction_map">'
+		+'<input type="button" value="Yes, let me try." onClick="drawFeatureOn();">'
+		+'<input type="button" value="No. Submit data." onClick="checkValidationAll(); selectControl.unselect(selectedFeature);">'
+		+'</div></td></tr>';
     }
 	else if(feature.attributes.validation == 'correct') {
 		document.getElementById("correction").innerHTML = '<td id="correction"><input type="button" value="Submit" onClick="checkValidationAll(); selectControl.unselect(selectedFeature);"></td>';
 	}
 	else {
-		document.getElementById("correction").innerHTML = '<td id="correction"></td>';
+		document.getElementById("correction").innerHTML = '<td id="correction"><input type="button" value="Try other location" onClick="checkValidationAll(); selectControl.unselect(selectedFeature);"></td>';
 	}
 
 }
@@ -322,8 +347,8 @@ function init(lonmin,latmin,lonmax,latmax,pid,WFSHOST) {
 	
     var mapextentPolygon_map1 = new OpenLayers.Layer.Vector("Target extent");
 	mapextentPolygon_map1.addFeatures(rectangle_map1);
-    map1.addLayers([wms,wfs_correction_layer]);
-	//map1.addLayers([google_maps,google_satellite,google_hybrid,osm,bing_road,bing_aerial,bing_hybrid,wfs_correction_layer,mapextentPolygon_map1]);
+    //map1.addLayers([wms,wfs_correction_layer]);
+	map1.addLayers([google_maps,google_satellite,google_hybrid,osm,bing_road,bing_aerial,bing_hybrid,wfs_correction_layer,mapextentPolygon_map1]);
     map1.zoomToExtent(map1extent);
 
     selectControl = new OpenLayers.Control.SelectFeature(
@@ -351,11 +376,10 @@ function init(lonmin,latmin,lonmax,latmax,pid,WFSHOST) {
 		}
 	    }
 	}
-
 	// For Safari
 	for(i=0; i<wfs_correction_layer.features.length; i++){
 	    if(isnull_validation(wfs_correction_layer.features[i])) {
-		e.returnValue = "You have not finished validation. Red icons still remain on the map.?";
+			e.returnValue = "You have not finished validation. Red icons still remain on the map.";
 	    }
 	}
     };	

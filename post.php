@@ -28,7 +28,8 @@ $stm->execute(array($pid,$userpost));
   	<link rel="stylesheet" href="style.css" type="text/css">
 	<title>Thank you!</title>
 	</head>
-  <body onLoad="setTimeout('window.close();', 5000)">
-  Thank you very much for your cooperation. Your feedback have been sent.
-</body>
+  <body onLoad="alert('Thanks for your cooperation. You can come back to complete or correct your validation.'); window.opener ='myself';
+ window.close();">
+<p>You can close this window.</p>
+  </body>
 </html>
