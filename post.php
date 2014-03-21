@@ -30,6 +30,6 @@ $stm->execute(array($pid,$userpost));
 	</head>
   <body onLoad="alert('Thanks for your cooperation. You can come back to complete or correct your validation.'); window.opener ='myself';
  window.close();">
-<p>You can close this window.</p>
+<h2>You can close this window.</h2>
   </body>
 </html>
