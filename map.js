@@ -44,8 +44,8 @@ function checkValidationAll(){
 	//alertProvideTextInfo();
     }else{
 	if(checkValidationAllDone()){
-	    alert("All of locations have been validated. Please provide information on mission locations in the text box, if any.");
-	    document.getElementById("project_attributes").innerHTML = '<div id="project_attributes" style="padding: 5px;"><span style="color:red;">Step 4: Provide information on missing locations, if any.</span><form action="post.php" method="post" name="validation"><input type="hidden" name="pid" value="'+project_id+'"><textarea name="missing_location" rows="4" cols="40" style="width:100%"></textarea><input type="submit" value="Let me FINISH" ></form>If you need to correct the results, please click the button below or a symbol on the map.</div><input type="button" onClick="correctResults();" value="Correct the results">';
+	    //alert("All of locations have been validated. Please provide information on mission locations in the text box, if any.");
+	    document.getElementById("project_attributes").innerHTML = '<div id="project_attributes" style="padding: 5px;"><span style="color:red;">Step 4: Provide information on missing locations, if any.</span><form action="post.php" method="post" name="validation"><input type="hidden" name="pid" value="'+project_id+'"><textarea name="missing_location" rows="4" cols="40" style="width:100%"></textarea></form>You can go back to Step 1 to correct your validation.</div><input type="button" onClick="correctResults();" value="Correct validation"><br><input type="submit" value="FINISH">';
 	    selectControl.unselect(selectedFeature);
 	}
     }
@@ -74,7 +74,7 @@ function zoomToDefault(){
 }
 
 function attributeStr(feature){
-    str = '<tr><td id="vi"><span style="color:red;">Step 2: Validate the location.</span><br>Validation status - Location is:<select name="correct" onChange="updateAttributes(attribute,this.options[this.options.selectedIndex].value);"><option value=""'
+    str = '<tr><td id="vi"><span style="color:red;">Step 2: Validate the location.</span><br>The Location is:<select name="correct" onChange="updateAttributes(attribute,this.options[this.options.selectedIndex].value);"><option value=""'
     if(isnull_validation(feature)){
 	str += ' selected></option><option value="correct">correct</option><option value="incorrect">NOT correct';
     }else if(feature.attributes.validation == 'correct') {
@@ -117,7 +117,7 @@ function onFeatureSelect(feature) {
     }
     attributeStr(feature);
     if(feature.attributes.validation == 'incorrect' || feature.attributes.validation == 'userlocation') {
-		document.getElementById("correction").innerHTML = '<tr><td id="correction"><span style="color:red;">Step 3: Provide information for correction.</span><div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);" onKeyUp="onBlurCorrectionText(this.value);">'+correction_text+'</textarea></div><span style="color:red;">Optional: Correct the location in the map by clicking and dragging.</span><div id="correction_map"><input type="button" value="Yes, let me try." onClick="drawFeatureOn();"><input type="button" value="No, thanks." onClick="checkValidationAll(); selectControl.unselect(selectedFeature);"></div></td></tr>';
+		document.getElementById("correction").innerHTML = '<tr><td id="correction"><span style="color:red;">Step 3: Provide information for correction.</span><div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);" onKeyUp="onBlurCorrectionText(this.value);">'+correction_text+'</textarea></div><span style="color:red;">Optional: Correct the location in the map by clicking and dragging.</span><div id="correction_map"><input type="button" value="Yes, let me try." onClick="drawFeatureOn();"><input type="button" value="No. Submit data." onClick="checkValidationAll(); selectControl.unselect(selectedFeature);"></div></td></tr>';
     }
 	else if(feature.attributes.validation == 'correct') {
 		document.getElementById("correction").innerHTML = '<td id="correction"><input type="button" value="Submit" onClick="checkValidationAll(); selectControl.unselect(selectedFeature);"></td>';
@@ -153,14 +153,14 @@ function onFeatureUnselect(feature) {
 		document.getElementById("approval_nos").innerHTML = "Approval No: ";
 		document.getElementById("adm1").innerHTML = "Adm1: ";
 		document.getElementById("adm2").innerHTML = "Adm2: ";
-		document.getElementById("vi").innerHTML = '<tr id="vi"><td>Validation status - </td></tr>';
+		document.getElementById("vi").innerHTML = '<tr id="vi"><td>The location is </td></tr>';
 		document.getElementById("correction").innerHTML = '<td id="correction"></td>';
     }
 }
 function updateAttributes(attribute,value,text){
     selectedFeature.attributes.validation = value;
     if(value == 'incorrect') {
-		document.getElementById("correction").innerHTML = '<tr id="correction"><td><span style="color:red;">Step 3: Provide information for correction.</span><div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);" onKeyUp="onBlurCorrectionText(this.value);">'+correction_text+'</textarea></div><span style="color:red;">Optional: Correct the location in the map by clicking and dragging.</span><div id="correction_map"><input type="button" value="Yes, let me try." onClick="drawFeatureOn();"><input type="button" value="No, thanks." onClick="checkValidationAll(); selectControl.unselect(selectedFeature);"></div></td></tr>';
+		document.getElementById("correction").innerHTML = '<tr id="correction"><td><span style="color:red;">Step 3: Provide information for correction.</span><div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);" onKeyUp="onBlurCorrectionText(this.value);">'+correction_text+'</textarea></div><span style="color:red;">Optional: Correct the location in the map by clicking and dragging.</span><div id="correction_map"><input type="button" value="Yes, let me try." onClick="drawFeatureOn();"><input type="button" value="No. Submit data." onClick="checkValidationAll(); selectControl.unselect(selectedFeature);"></div></td></tr>';
     }else{
 		document.getElementById("correction").innerHTML = '<td id="correction"><input type="button" value="Submit" onClick="	checkValidationAll(); selectControl.unselect(selectedFeature);"></td>';
     }
@@ -188,7 +188,6 @@ function drawFeatureOn(){
 
 function drawFeatureOff(){
     modify.deactivate();
-    //document.getElementById("correction_map").innerHTML = '<input type="button" value="Yes, let me try." onClick="drawFeatureOn();"><input type="button" value="No, thanks." onClick="checkValidationAll(); selectControl.unselect(selectedFeature);">';
 	selectedFeature.attributes.validation = 'userlocation';
     selectControl.activate();
     selectControl.unselect(selectedFeature);
@@ -323,8 +322,8 @@ function init(lonmin,latmin,lonmax,latmax,pid,WFSHOST) {
 	
     var mapextentPolygon_map1 = new OpenLayers.Layer.Vector("Target extent");
 	mapextentPolygon_map1.addFeatures(rectangle_map1);
-    //map1.addLayers([wms,wfs_correction_layer]);
-    map1.addLayers([google_maps,google_satellite,google_hybrid,osm,bing_road,bing_aerial,bing_hybrid,wfs_correction_layer,mapextentPolygon_map1]);
+    map1.addLayers([wms,wfs_correction_layer]);
+	//map1.addLayers([google_maps,google_satellite,google_hybrid,osm,bing_road,bing_aerial,bing_hybrid,wfs_correction_layer,mapextentPolygon_map1]);
     map1.zoomToExtent(map1extent);
 
     selectControl = new OpenLayers.Control.SelectFeature(
@@ -348,7 +347,7 @@ function init(lonmin,latmin,lonmax,latmax,pid,WFSHOST) {
 	if (e) {
 	    for(i=0; i<wfs_correction_layer.features.length; i++){
 		if(isnull_validation(wfs_correction_layer.features[i])) {
-		    e.returnValue = "You have not finished validation. Do you want to continue later?";
+		    e.returnValue = "You have not finished validation. Red icons still remain on the map.";
 		}
 	    }
 	}
@@ -356,7 +355,7 @@ function init(lonmin,latmin,lonmax,latmax,pid,WFSHOST) {
 	// For Safari
 	for(i=0; i<wfs_correction_layer.features.length; i++){
 	    if(isnull_validation(wfs_correction_layer.features[i])) {
-		e.returnValue = "You have not finished validation. Do you want to continue later?";
+		e.returnValue = "You have not finished validation. Red icons still remain on the map.?";
 	    }
 	}
     };	
