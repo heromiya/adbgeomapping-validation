@@ -1,14 +1,5 @@
 <?php
 include '../.var.php';
-/*
-require_once 'MDB2.php';
-$db = MDB2::connect('pgsql://heromiya@'.$DBHOST.'/adbgeomapping?charset=utf8');
-if(PEAR::isError($db)) {
-    print('There is an error with connection to the database. Please contact with administrator.');
-	echo $db->getDebugInfo();
-}
-*/
-
 $db = pg_connect("host=".$DBHOST." dbname=adbgeomapping user=heromiya");
 if (!$db) {
     die('DB fail '.pg_last_error());
@@ -20,29 +11,6 @@ if(isset($_GET['pid'])) $pid=$_GET['pid'];
 
 if(isset($_GET['proj1'])) $proj1=$_GET['proj1'];
 if($proj1==NULL) $proj1 = "TMS";
-
-/*
-$stm = $db->prepare("SELECT ST_XMax(ST_Collect(the_geom))
-                    , ST_XMin(ST_Collect(the_geom))
-                    , ST_YMax(ST_Collect(the_geom))
-                    , ST_Ymin(ST_Collect(the_geom))
-                     FROM adbprojects
-                     WHERE project_id = ?;"
-		    ,array('text')
-		    ,array('float','float','float','float')
-		    );
-
-if (PEAR::isError($stm)){
-echo $stm->getDebugInfo();
-exit();
-}
-$result = $stm->execute($pid);
-
-if (PEAR::isError($result)){
-echo $result->getDebugInfo();
-exit();
-}
-*/
 $stm = sprintf("SELECT ST_XMax(ST_Collect(the_geom))
                     , ST_XMin(ST_Collect(the_geom))
                     , ST_YMax(ST_Collect(the_geom))
@@ -53,14 +21,12 @@ $stm = sprintf("SELECT ST_XMax(ST_Collect(the_geom))
 $result = pg_query( $stm );
 $row = pg_fetch_array($result, NULL, PGSQL_NUM);
 
-#while ($row = $result->fetchRow(DB2_FETCHMODE_ORDERED)) {
 	$lonbuf=0.5*($row[0]-$row[1]);
 	$latbuf=0.5*($row[2]-$row[3]);
 	$lonmax=$row[0]+$lonbuf;
 	$lonmin=$row[1]-$lonbuf;
 	$latmax=$row[2]+$latbuf;
 	$latmin=$row[3]-$latbuf;
-#}
 ?>
 
 <html>
@@ -98,6 +64,7 @@ $row = pg_fetch_array($result, NULL, PGSQL_NUM);
 	    <tr><td><div id="project_id">Project No:</div></td></tr>
 	    <tr><td><div id="project_title">Project Name:</div></td></tr>
 		<tr><td><div id="approval_nos">Approval No:</div></td></tr>
+		<tr><td><div id="geoname">Geoname:</div></td></tr>
 	    <tr><td><div id="adm1">Location Name-ADM1:</div></td></tr>
 	    <tr><td><div id="adm2">Location Name-ADM2:</div></td></tr>
 	    <form name="validation">

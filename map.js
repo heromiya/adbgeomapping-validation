@@ -61,8 +61,23 @@ function checkValidationAll(){
 }
 
 function correctResults(){
-	document.getElementById("project_attributes").innerHTML = '<div id="project_attributes"><table border="1" width="100%" cellpadding="5px"><tr><td id="instruction">Step 1: Click a "red" location <img src="OpenLayers-2.13.1/img/marker.png"> for validation.</td></tr><tr><td><div id="country">Country:</div></td></tr><tr><td><div id="project_id">Project No:</div></td></tr><tr><td><div id="project_title">Project Name:</div></td></tr><tr><td><div id="approval_nos">Approval No:</div></td></tr><tr><td><div id="adm1">Adm1:</div></td></tr><tr><td><div id="adm2">Adm2:</div></td></tr><form name="validation"><tr><td id="vi"></td></tr><tr><td id="correction"></td></tr></form></table></div>';
-
+	document.getElementById("project_attributes").innerHTML = 
+	'<div id="project_attributes">'
+	+'<table border="1" width="100%" cellpadding="5px">'
+	+'<tr><td id="instruction">Step 1: Click a "red" location <img src="OpenLayers-2.13.1/img/marker.png"> for validation.</td></tr>'
+	+'<tr><td><div id="country">Country:</div></td></tr>'
+	+'<tr><td><div id="project_id">Project No:</div></td></tr>'
+	+'<tr><td><div id="project_title">Project Name:</div></td></tr>'
+	+'<tr><td><div id="approval_nos">Approval No:</div></td></tr>'
+	+'<tr><td><div id="geoname">Geoname:</div></td></tr>'
+	+'<tr><td><div id="adm1">Location Name-Adm1:</div></td></tr>'
+	+'<tr><td><div id="adm2">Location Name-Adm2:</div></td></tr>'
+	+'<form name="validation">'
+	+'<tr><td id="vi"></td></tr>'
+	+'<tr><td id="correction"></td></tr>'
+	+'</form>'
+	+'</table>'
+	+'</div>';
 }
 
 function showSuccessMsg(){
@@ -82,15 +97,27 @@ function zoomToDefault(){
 }
 
 function attributeStr(feature){
-    str = '<tr><td id="vi"><span style="color:red;">Step 2: Validate the location.</span><br>The Location is <select name="correct" onChange="updateAttributes(attribute,this.options[this.options.selectedIndex].value);"><option value=""'
+		str = '<tr><td id="vi">'
+		+'<span style="color:red;">Step 2: Validate the location.</span><br>'
+		+'The Location is <select name="correct" onChange="updateAttributes(attribute,this.options[this.options.selectedIndex].value);">'
+		+'<option value=""'
     if(isnull_validation(feature)){
-	str += ' selected></option><option value="correct">correct</option><option value="incorrect">NOT correct';
+		str += ' selected></option>'
+		+'<option value="correct">correct</option>'
+		+'<option value="incorrect">NOT correct';
     }else if(feature.attributes.validation == 'correct') {
-	str += '></option><option value="correct" selected>correct</option><option value="incorrect">NOT correct';
+		str += '></option>'
+		+'<option value="correct" selected>correct</option>'
+		+'<option value="incorrect">NOT correct';
     }else if(feature.attributes.validation == 'incorrect' || feature.attributes.validation == 'userlocation') {
-	str += '></option><option value="correct">correct</option><option value="incorrect" selected>NOT correct';
+		str += '></option>'
+		+'<option value="correct">correct</option>'
+		+'<option value="incorrect" selected>NOT correct';
     }else {
-	str += '></option><option value="correct">correct</option><option value="incorrect">NOT correct</option><option value="undefined" selected>undefined';
+		str += '></option>'
+		+'<option value="correct">correct</option>'
+		+'<option value="incorrect">NOT correct</option>'
+		+'<option value="undefined" selected>undefined';
     }
     document.getElementById("vi").innerHTML = str + '</option></select></td></tr>';
 }
@@ -108,8 +135,9 @@ function onFeatureSelect(feature) {
 	+'<tr><td><div id="project_id">Project No:</div></td></tr>'
 	+'<tr><td><div id="project_title">Project Name:</div></td></tr>'
 	+'<tr><td><div id="approval_nos">Approval No:</div></td></tr>'
-	+'<tr><td><div id="adm1">Adm1:</div></td></tr>'
-	+'<tr><td><div id="adm2">Adm2:</div></td></tr>'
+	+'<tr><td><div id="geoname">Geoname:</div></td></tr>'
+	+'<tr><td><div id="adm1">Location Name-Adm1:</div></td></tr>'
+	+'<tr><td><div id="adm2">Location Name-Adm2:</div></td></tr>'
 	+'<form name="validation"><tr><td id="vi"></td></tr><tr><td id="correction"></td></tr></form></table></div>';
     
     if(isnull_correction_text(feature)){
@@ -121,15 +149,20 @@ function onFeatureSelect(feature) {
     document.getElementById("project_title").innerHTML = "Project Name: " + feature.attributes.title;
     document.getElementById("country").innerHTML = "Country: " + feature.attributes.country;
     document.getElementById("approval_nos").innerHTML = "Approval No: " + feature.attributes.approval_nos;
-    if(feature.attributes.adm1_name == null){
-		document.getElementById("adm1").innerHTML = "Adm1: ";
+    if(feature.attributes.geoname == null){
+		document.getElementById("geoname").innerHTML = "Geoname: ";
     }else{
-		document.getElementById("adm1").innerHTML = "Adm1: " + feature.attributes.adm1_name;
+		document.getElementById("geoname").innerHTML = "Geoname: " + feature.attributes.geoname;
+    }
+    if(feature.attributes.adm1_name == null){
+		document.getElementById("adm1").innerHTML = "Location Name-Adm1: ";
+    }else{
+		document.getElementById("adm1").innerHTML = "Location Name-Adm1: " + feature.attributes.adm1_name;
     }
     if(feature.attributes.adm2_name == null){
-		document.getElementById("adm2").innerHTML = "Adm2: " ;
+		document.getElementById("adm2").innerHTML = "Location Name-Adm2: " ;
     }else{
-		document.getElementById("adm2").innerHTML = "Adm2: " + feature.attributes.adm2_name;
+		document.getElementById("adm2").innerHTML = "Location Name-Adm2: " + feature.attributes.adm2_name;
     }
     attributeStr(feature);
     if(feature.attributes.validation == 'incorrect' || feature.attributes.validation == 'userlocation') {
@@ -176,8 +209,9 @@ function onFeatureUnselect(feature) {
 		document.getElementById("project_title").innerHTML = "Project Name: ";
 		document.getElementById("country").innerHTML = "Country: ";
 		document.getElementById("approval_nos").innerHTML = "Approval No: ";
-		document.getElementById("adm1").innerHTML = "Adm1: ";
-		document.getElementById("adm2").innerHTML = "Adm2: ";
+		document.getElementById("geoname").innerHTML = "Geoname: ";
+		document.getElementById("adm1").innerHTML = "Location Name-ADM1: ";
+		document.getElementById("adm2").innerHTML = "Location Name-ADM2: ";
 		document.getElementById("vi").innerHTML = '<tr id="vi"><td>The location is </td></tr>';
 		document.getElementById("correction").innerHTML = '<td id="correction"></td>';
     }
@@ -185,9 +219,21 @@ function onFeatureUnselect(feature) {
 function updateAttributes(attribute,value,text){
     selectedFeature.attributes.validation = value;
     if(value == 'incorrect') {
-		document.getElementById("correction").innerHTML = '<tr id="correction"><td><span style="color:red;">Step 3: Provide information for correction.</span><div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);" onKeyUp="onBlurCorrectionText(this.value);">'+correction_text+'</textarea></div><span style="color:red;">Optional: Correct the location in the map by clicking and dragging.</span><div id="correction_map"><input type="button" value="Yes, let me try." onClick="drawFeatureOn();"><input type="button" value="No. Submit data." onClick="checkValidationAll(); selectControl.unselect(selectedFeature);"></div></td></tr>';
+		document.getElementById("correction").innerHTML = 
+		'<tr id="correction"><td>'
+		+'<span style="color:red;">Step 3: Provide information for correction.</span>'
+		+'<div id="correction_text"><textarea name="correction_text" rows="4" cols="40" style="width:100%" onChange="updateCorrectionText(attribute,this.value);" onKeyUp="onBlurCorrectionText(this.value);">'
+		+correction_text
+		+'</textarea></div>'
+		+'<span style="color:red;">Optional: Correct the location in the map by clicking and dragging.</span>'
+		+'<div id="correction_map">'
+		+'<input type="button" value="Yes, let me try." onClick="drawFeatureOn();">'
+		+'<input type="button" value="No. Submit data." onClick="checkValidationAll(); selectControl.unselect(selectedFeature);">'
+		+'</div></td></tr>';
     }else{
-		document.getElementById("correction").innerHTML = '<td id="correction"><input type="button" value="Submit" onClick="	checkValidationAll(); selectControl.unselect(selectedFeature);"></td>';
+		document.getElementById("correction").innerHTML = 
+		'<td id="correction">'
+		+'<input type="button" value="Submit" onClick="	checkValidationAll(); selectControl.unselect(selectedFeature);"></td>';
     }
     selectedFeature.state = OpenLayers.State.UPDATE;
     saveStrategy.save();
@@ -207,7 +253,9 @@ function drawFeatureOn(){
     }else{
 	modify.feature = selectedFeature;
 	modify.activate();
-	document.getElementById("correction_map").innerHTML = '<input type="button" value="Submit the correction" onClick="checkValidationAll(); drawFeatureOff();"><input type="button" value="Let me quit. Restore the original location." onClick="resetLocation();">';
+	document.getElementById("correction_map").innerHTML = 
+	'<input type="button" value="Submit the correction" onClick="checkValidationAll(); drawFeatureOff();">'
+	+'<input type="button" value="Let me quit. Restore the original location." onClick="resetLocation();">';
     }
 }
 
